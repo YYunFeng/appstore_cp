@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AppLog">
+    <typeAlias alias="AppLog" type="com.jd.appstore.domain.AppLog"/>
+
+    <insert id="createAppLog" parameterClass="AppLog">
+        insert into tb_app_log (
+             id,appid,app_name,package,app_type,categoryid_l2,
+             categoryid1,default_detail_id,base_check_status,
+             base_sync_flag,online_sync_flag,online_opt_type,newst_flag,created,modified
+        )values(
+             #id#,#appId#,#appName#,#pkg#,#appType#,#categoryidL2#,#categoryId1#,
+             #defaultDetailId#,#baseCheckStatus#,#baseSyncFlag#,#onlineSyncFlag#,#onlineOptType#,
+             #newstFlag#,now(),#modified#
+        );
+    </insert>
+    <update id="updateAppLog" parameterClass="int">
+        update
+           tb_app_log
+         set
+           newst_flag = 0
+         where
+           appid=#appId#
+         and
+           newst_flag = 1
+    </update>
+    <select id="findAppByAppId" parameterClass="int" resultClass="AppLog">
+        select
+            a.appid as appId,
+            a.app_name as appName,
+            a.package as pkg,
+            a.app_type as appType,
+            a.categoryid_l2 as categoryidL2,
+            a.categoryid1 as categoryId1,
+            a.default_detail_id as defaultDetailId,
+            a.created as created,
+            a.modified as modified
+        from
+          	tb_app_log as  a
+        where
+            appId = #appId#
+        and
+            newst_flag = 0
+         order by
+             created desc
+         limit 1
+
+
+    </select>
+</sqlMap>

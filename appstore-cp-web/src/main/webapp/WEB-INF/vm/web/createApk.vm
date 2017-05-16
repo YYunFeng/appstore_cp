@@ -1,0 +1,528 @@
+#set($layout="ajax.vm")
+<script type="text/javascript" src="$assetModule.getTarget("/appstore-man/js/jquery-1.7.1.js")"></script>
+<link rel="stylesheet" href="$assetModule.getTarget("/appstore-man/js/uploadify-v2.1.4/uploadify.css")" type="text/css"
+      media="screen"/>
+<script type="text/javascript" src="$assetModule.getTarget("/appstore-man/js/uploadify-v2.1.4/swfobject.js")"></script>
+<script type="text/javascript"
+        src="$assetModule.getTarget("/appstore-man/js/uploadify-v2.1.4/jquery.uploadify.v2.1.4.min.js")"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+    var d = new Pop({ oPop: "dialog-fee", zIndex: 10001, mode: ["center", "center"], idOpen: "open_fee", idClose: ["close", "close_fee"], cover: true, beCover: false, zIndexCover: 1000, colorCover: "#666", opactiyCover: 0.4 });
+    $("#uploadify").uploadify({
+        'uploader': '/appstore-man/js/uploadify-v2.1.4/uploadify.swf',
+        'script': '$homeModule.getTarget("/upload/uploadApk.action")',//后台处理的请求
+        'cancelImg': '/appstore-man/js/uploadify-v2.1.4/cancel.png',
+        'fileDataName': 'uploadFile',//服务器端根据这个接收文件
+        'queueID': 'fileQueue',//与下面的id对应
+        'queueSizeLimit': 1,
+        'fileDesc': 'APK文件',
+        'fileExt': '*.apk', //控制可上传文件的扩展名，启用本项时需同时声明fileDesc
+        'auto': true,
+        'multi': false,
+        'scriptData': {'account': '$webHelper.getPin()'},
+        'buttonImg': '/appstore-man/images/uploadapk.png',
+        'onError': function (event, queueID, fileObj, errorObj) {
+            alert(" 上传失败!");
+        },
+        'onComplete': function (event, queueID, fileObj, response, data) {
+            if (response != '') {
+                readApk(response);
+            } else {
+                alert('上传失败!');
+            }
+        }
+    });
+});
+
+function trim(str) { // 去空格函数
+    return str.replace(/(^\s*)|(\s*$)/g, "");
+}
+
+function readApk(response) {
+    loadTickAlert('处理中....');
+    jQuery.ajax({
+        type: "GET",
+        url: '$homeModule.getTarget("/upload/readApk.action")',
+        data: "fileName=" + response,
+        dataType: "json",
+        success: function (data) {
+            if (data.flag == 0) {
+                alert('失败:' + data.mess);
+                closeTickAlert();
+            } else {
+                jQuery.ajax({
+                    type: "POST",
+                    url: "/dev/authApk.action",
+                    data: "pkg=" + data.packageName + "&apkName=" + data.apkName,
+                    dataType: "json",
+                    success: function (msg) {
+                        if (msg.status == 1) {
+                            if (msg.falg == 1) {
+                                alert('您已经上传了该应用!');
+                                $("#apkmess").html('');
+                                $('#apkname').val('')
+                                $('#size').val(data.size);
+                                $('#minSdkVersion').val('');
+                                $('#packageName').val('');
+                                $('#version').val('');
+                                $('#versionCode').val('');
+
+                                $('#appId').val('');
+                                $('#appName').val('');
+                                $('#appName').removeClass('hide');
+                                $('#app_name').html('');
+                                $('#category').removeClass('hide');
+                                $('#categoryid1').val('');
+                                $('#categoryid2').val('');
+                                $('#categoryName').html('');
+                                $('#fee_mode').removeClass('hide');
+                                $('#apkFileName').val('');
+                                $('#feeMode').html('');
+                                $('#size').val('');
+                            } else if (msg.falg == 2) {
+                                alert('其他CP已经上传了该应用的收费版本!');
+                            } else if (response == null || response == '') { // 判断云服务器返回的值是否为空
+                                alert('上传异常，请重试!');
+                            } else if (msg.appId != null && msg.appName != null) {
+                                $('#appId').val(msg.appId);
+                                $('#appName').val(msg.appName);
+                                $('#appName').addClass('hide');
+                                $('#app_name').html(msg.appName);
+                                $('#category').addClass('hide');
+                                $('#categoryid1').val(msg.categoryidL2);
+                                $('#categoryid2').val(msg.categoryId1);
+                                $('#categoryName').html(msg.categoryidL2Name);
+                                $('#categoryName').append('&nbsp;&nbsp;&nbsp;' + msg.categoryId1Name);
+                                $('#fee_mode').addClass('hide');
+                                $('#apkFileName').val(response);
+                                $('#feeMode').html('免费');
+
+                                $('#apkname').val(response)
+                                $('#apkmess').removeClass('hide');
+                                $('#size').val(data.size);
+                                $('#minSdkVersion').val(data.minSdkVersion);
+                                $('#packageName').val(data.packageName);
+                                $('#version').val(data.version);
+                                $('#versionCode').val(data.versionCode);
+                                var apk_size = parseInt(data.size / 1024) + "KB";
+                                var apkInfo = "";
+                                apkInfo += "-------------------------------------------------------------------------------------------------"
+                                apkInfo += "<h4>apk信息：</h4>";
+                                apkInfo += "<table width=\"82%\">";
+                                apkInfo += "<tbody>";
+                                apkInfo += "<tr><td>package:" + data.packageName + "</td><td>version:" + data.version + "</td></tr>";
+                                apkInfo += "<tr><td>min_sdk_version:" + data.minSdkVersion + " </td><td>size:" + apk_size + "</td></tr>";
+                                apkInfo += "<tr><td>vesionCode:" + data.versionCode + " </td></tr>";
+                                apkInfo += "</tbody>";
+                                apkInfo += "</table>";
+                                apkInfo += "------------------------------------------------------------------------------------------------"
+                                $("#apkmess").html(apkInfo);
+
+                            }
+                            if (msg.falg == 3) {
+                                if ($('#appId').val() != '') {
+                                    $('#appId').val('');
+                                    $('#appName').val('');
+                                    $('#appName').removeClass('hide');
+                                    $('#app_name').html('');
+                                    $('#category').removeClass('hide');
+                                    $('#categoryid1').val('');
+                                    $('#categoryid2').val('');
+                                    $('#categoryName').html('');
+                                    $('#fee_mode').removeClass('hide');
+                                    $('#apkFileName').val('');
+                                    $('#feeMode').html('');
+                                    $('#size').val('');
+                                }
+
+
+                                $('#apkmess').removeClass('hide');
+                                $('#size').val(data.size);
+                                $('#minSdkVersion').val(data.minSdkVersion);
+                                $('#packageName').val(data.packageName);
+                                $('#version').val(data.version);
+                                $('#apkFileName').val(response);
+                                $('#versionCode').val(data.versionCode);
+                                var apk_size = parseInt(data.size / 1024) + "KB";
+                                var apkInfo = "";
+                                apkInfo += "-------------------------------------------------------------------------------------------------"
+                                apkInfo += "<h4>apk信息：</h4>";
+                                apkInfo += "<table width=\"82%\">";
+                                apkInfo += "<tbody>";
+                                apkInfo += "<tr><td>package:" + data.packageName + "</td><td>version:" + data.version + "</td></tr>";
+                                apkInfo += "<tr><td>min_sdk_version:" + data.minSdkVersion + " </td><td>size:" + apk_size + "</td></tr>";
+                                apkInfo += "<tr><td>vesionCode:" + data.versionCode + " </td></tr>";
+                                apkInfo += "</tbody>";
+                                apkInfo += "</table>";
+                                apkInfo += "------------------------------------------------------------------------------------------------"
+                                $("#apkmess").html(apkInfo);
+                            }
+                            closeTickAlert();
+                        } else {
+                            alert(msg.mess);
+                            closeTickAlert();
+                        }
+                    }
+                });
+            }
+        }
+    });
+}
+
+$("#uploadlogo").uploadify({
+    'uploader': '/appstore-man/js/uploadify-v2.1.4/uploadify.swf',
+    'script': '$homeModule.getTarget("/upload/uploadLogo.action")',//后台处理的请求
+    'cancelImg': '/appstore-man/js/uploadify-v2.1.4/cancel.png',
+    'fileDataName': 'uploadFile',//服务器端根据这个接收文件
+    'queueID': 'Queue',//与下面的id对应
+    'queueSizeLimit': 1,
+    'fileDesc': '请选择jpg,png文件',
+    'fileExt': '*.png;*.jpg;*.jpeg;', //控制可上传文件的扩展名，启用本项时需同时声明fileDesc
+    'auto': true,
+    'multi': false,
+    'simUploadLimit': 1,
+    'scriptData': {'account': '$webHelper.getPin()'},
+    'buttonImg': '/appstore-man/images/uploadlogo.png',
+    'onError': function (event, queueID, fileObj, errorObj) {
+        alert("上传失败!");
+    },
+    'onComplete': function (event, queueID, fileObj, response, data) {
+        if (response != '') {
+            var imgurl = '$imgTempServerModule.getTarget('cover/')' + response;
+            $('#picurl').val(response);
+            $('#pic').attr('src', imgurl);
+        } else {
+            alert('上传失败!');
+        }
+    }
+});
+
+function saveApk() {
+    loadTickAlert('加载中....');
+    var saveflag = $('#J-btn').val();
+    if (saveflag == 0) {
+        $('#J-btn').val('1');
+        var appId = $('#appId').val();
+        var appName = $('#appName').val();
+        var categoryid1 = $('#categoryid1').val();
+        var categoryid2 = $('#categoryid2').val();
+        var price = $('#price').val();
+        var fee_mode = $('#fee_mode').val();
+        var logourl = $('#picurl').val();
+        var appIntroduce = document.getElementById('app_introduce').value;
+        var appTag = $('#app_tag').val();
+        var size = $('#size').val();
+        var minSdkVersion = $('#minSdkVersion').val();
+        var versionCode = $('#versionCode').val();
+        var packageName = $('#packageName').val();
+        var version = $('#version').val();
+        var apkFileName = $('#apkFileName').val();
+        var pic = new Array();
+        var picString = "";
+        $('.uploadimg').each(function (index, item) {
+            pic[index] = $(item).val();
+            picString += pic[index] + ",";
+        });
+
+        if (trim(version) == '' && trim(packageName) == '' && trim(minSdkVersion) == '' && trim(size) == '') {
+            alert('请确定APK包是否上传完成!');
+            $('#J-btn').val('0');
+        } else if (trim(apkFileName) == '') {
+            alert('上传APK包错误，请重试!');
+            $('#J-btn').val('0');
+        } else if (trim(appName) == '') {
+            alert('请填写应用名称!');
+            $('#J-btn').val('0');
+        } else if (trim(categoryid1) == '' || trim(categoryid2) == '') {
+            alert('请选择应用类目!');
+            $('#J-btn').val('0');
+        } else if (trim(appIntroduce) == '') {
+            alert('请输入应用简介!');
+            $('#J-btn').val('0');
+        } else if (trim(logourl) == '') {
+            alert('请上传应用LOGO');
+            $('#J-btn').val('0');
+        } else if (pic.length < 2) {
+            alert('请上传至少2张应用截图!');
+            $('#J-btn').val('0');
+        } else if (fee_mode != $!cpBaseinfo.defaultFeeMode) {
+            alert('你还不能上传收费应用!');
+            $('#J-btn').val('0');
+        } else {
+            appIntroduce = encodeURI(appIntroduce);
+            appName = encodeURI(appName);
+            appTag = encodeURI(appTag);
+            jQuery.ajax({
+                type: "POST",
+                url: "$homeModule.getTarget("/dev/saveApk.action")",
+                data: {"appLog.appName": appName,
+                    "appLog.pkg": packageName,
+                    "appLog.appType": 2,
+                    "appLog.categoryidL2": categoryid1,
+                    "appLog.categoryId1": categoryid2,
+                    "appLog.appId": appId,
+                    "appDetailLog.appVersion": version,
+                    "appDetailLog.appTag": appTag,
+                    "appDetailLog.feeMode": fee_mode,
+                    "appDetailLog.price": price,
+                    "appDetailLog.logoUrl": logourl,
+                    "appDetailLog.appIntroduce": appIntroduce,
+                    "appResource.pics": picString,
+                    "appResource.apkName": apkFileName,
+                    "appDetailLog.pkgSize": size,
+                    "appDetailLog.appVersionCode": versionCode,
+                    "appDetailLog.minSdkVersion": minSdkVersion},
+                dataType: 'json',
+                success: function (data) {
+                    if (data.status) {
+                        goBack();
+                    } else {
+                        alert(data.msg);
+                        $('#J-btn').val('0');
+                    }
+                    closeTickAlert();
+                }
+            });
+        }
+    }
+}
+
+/*$("#fee_mode").change(function() {
+    $("#fee_mode option:selected").text() == "收费" ? $(".pub-appprize").show() : $(".pub-appprize").hide();
+    if ($("#fee_mode option:selected").text() == "免费") {
+        $("#release_NewAppN_txtPrice").val("0")
+    }
+});*/
+
+function checkCategory(val) {
+    document.getElementById("cate").innerHTML = "";
+    $('#categoryid1').val(val);
+    if (val == '') {
+        var selectCategory = document.getElementById("cate");
+        var cate = new Option('请选择');
+        selectCategory.add(cate);
+        $('#categoryid2').val('');
+    } else {
+        jQuery.ajax({
+            type: 'post',
+            url: "/dev/getCategory.action",
+            data: "id=" + val,
+            dataType: "json",
+            success: function (data) {
+                var selectCategory = document.getElementById("cate");
+                $('#categoryid2').val(data.map.categorys[0].categoryId);
+                for (var i = 0; i < data.map.categorys.length; i++) {
+                    var cate = new Option(data.map.categorys[i].categoryName, data.map.categorys[i].categoryId + "");
+                    selectCategory.add(cate);
+                }
+            }
+        });
+    }
+}
+function getValue(val) {
+    $('#categoryid2').val(val);
+}
+</script>
+<div class="right rounded">
+    <div class="top radius overflow">应用编辑</div>
+    <div class="cotBox">
+        <form name="" method="post" action="" onsubmit="">
+
+            <div class="lsBd1">
+                <label class="bt"><em class="red">*</em>上传APK：</label>
+                <label class="wnr">
+                    <input name="uploadify" id="uploadify" class="hide"/>
+                    <input type="hidden" id="apkname"/>
+
+                    <div id="fileQueue"></div>
+                    <div class="apk_info hide" id="apkmess">
+                    </div>
+                </label>
+                <label class="ts"></label>
+            </div>
+
+            <div class="lsBd1">
+                <label class="bt"><em class="red">*</em>名　　称：</label>
+                <label class="nr">
+                    <input id="appName" class="ipt1" maxlength="25" type="text"/>
+                    <span id="app_name"></span>
+                </label>
+                <label class="ts"></label>
+            </div>
+
+            <div class="lsBd1">
+                <label class="bt"><em class="red">*</em>应用分类：</label>
+              <span class="nr fl" id="category">
+                  <select name="categoryidl" #*class="slt slt2" *#onchange="checkCategory(this.value);">
+                      <option selected value="">请选择</option>
+                      <option value="$categoryUtils.getSoftCategoryId()">移动软件</option>
+                      <option value="$categoryUtils.getGameCategoryId()">移动游戏</option>
+                  </select>
+                  <select id="cate" name="categoryid2" #*class="slt slt2"*# onchange="getValue(this.value);">
+                      <option selected value="">请选择</option>
+                  </select>
+              </span>
+                <span id="categoryName"></span>
+                <label class="ts"></label>
+            </div>
+            <div class="lsBd1">
+                <label class="bt"><em class="red">*</em>价　　格：</label>
+                <select id="fee_mode" class="slt slt2">
+                    <option value="0">免费</option>
+                #*  <option value="1" #if($!cpBaseinfo.defaultFeeMode==0) class="open_fee" #end>收费</option>*#
+                </select>
+            #*<label class="msradio"><input name="msradio" type="radio" value="0" id="mradio" checked="checked" />免费<input id="sradio" name="msradio" type="radio" value="1" #if($!cpBaseinfo.defaultFeeMode==0) class="open_fee" #end/>收费</label>*#
+                <span id="feeMode"></span>
+            <span class="pub-appprize" style="display:none;">
+                <input id="price" class="ipt6" type="text" value="0" maxlength="20"/>
+                <span class="rmb">元</span>
+             </span>
+                <label class="ts"></label>
+            </div>
+
+            <div class="lsBd3">
+                <label class="bt"><em class="red">*</em>详情描述：</label>
+                <label class="nr">
+                    <textarea id="app_introduce" name="" class="ipt4" maxlength="2000" wrap="physical"></textarea>
+                </label>
+                <label class="ts"></label>
+            </div>
+
+            <div class="lsBd1">
+                <label class="bt">关键词：</label>
+                <label class="nr">
+                    <input id="app_tag" name="" class="ipt1" maxlength="25" type="text">
+                    <label class="ts">请用英文逗号隔开</label>
+                </label>
+                <label class="ts"></label>
+            </div>
+
+            <div class="lsBd5">
+                <label class="bt"><em class="red">*</em>应用logo：</label>
+
+                <div class="nr fl">
+                    <div class="default fl">
+                        <img src="/appstore-man/images/default.png" width="85" height="85" id="pic"/>
+                        <input type="hidden" id="picurl" class="hide"/>
+                    </div>
+                    <div class="va fl">
+                        <input type="file" name="upload" id="uploadlogo"
+                               class="upbtn"/>
+                    </div>
+                    <div class="fl">
+                        <div id="Queue"></div>
+                    </div>
+                    <div class="ts">格式为JPG或者PNG，建议图片大小200*200.</div>
+                </div>
+                <label class="ts"></label>
+            </div>
+
+            <div class="lsBd5">
+                <label class="bt"><em class="red">*</em>应用截图：</label>
+
+                <div class="nr fl">
+                    <div class="screenshot">
+                        <div class="screen_del">
+                            <div class="plus" id="J-plus1">
+                                <a href="#"><img src="$assetModule.getTarget("/appstore-man/images/plus.png")"/></a>
+                            </div>
+                        </div>
+                        <a style="cursor:pointer" class="delete">删除</a>
+                    </div>
+                    <div class="screenshot">
+                        <div class="screen_del">
+                            <div class="plus" id="J-plus2">
+                                <a href="#"><img src="$assetModule.getTarget("/appstore-man/images/plus.png")"/></a>
+                            </div>
+                        </div>
+                        <a style="cursor:pointer" class="delete">删除</a>
+                    </div>
+                    <div class="screenshot">
+                        <div class="screen_del">
+                            <div class="plus" id="J-plus3">
+                                <a href="#"><img src="$assetModule.getTarget("/appstore-man/images/plus.png")"/></a>
+                            </div>
+                        </div>
+                        <a style="cursor:pointer" class="delete">删除</a></div>
+                    <div class="screenshot">
+                        <div class="screen_del">
+                            <div class="plus" id="J-plus4"><a href="#"><img
+                                    src="$assetModule.getTarget("/appstore-man/images/plus.png")"/></a></div>
+                        </div>
+                        <a style="cursor:pointer" class="delete">删除</a></div>
+                    <div class="screenshot">
+                        <div class="screen_del">
+                            <div class="plus" id="J-plus5"><a href="#"><img
+                                    src="$assetModule.getTarget("/appstore-man/images/plus.png")"/></a></div>
+                        </div>
+                        <a style="cursor:pointer" class="delete">删除</a></div>
+                    <div class="ts">格式为JPG或者PNG，最低2张，最多5张，建议图片大小230*380.</div>
+                    <div id="QueuePic" class="uploadifyQueue"></div>
+                </div>
+            </div>
+            <script type="text/javascript">
+                function PicUpload(node, queueID) {
+                    $(node).uploadify({
+                        'uploader': '/appstore-man/js/uploadify-v2.1.4/uploadify.swf',
+                        'script': '$homeModule.getTarget("/upload/uploadPic.action")',//后台处理的请求
+                        'cancelImg': '/appstore-man/js/uploadify-v2.1.4/cancel.png',
+                        'fileDataName': 'uploadFile',//服务器端根据这个接收文件
+                        'queueID': queueID,//与下面的id对应
+                        'fileDesc': '请选择jpg,png文件',
+                        'fileExt': '*.png;*.jpg;*.jpeg', //控制可上传文件的扩展名，启用本项时需同时声明fileDesc
+                        'auto': true,
+                        'queueSizeLimit': 1,
+                        'multi': true,
+                        'simUploadLimit': 1,
+                        'scriptData': {'account': '$webHelper.getPin()'},
+                        'buttonImg': '/appstore-man/images/plus.png',
+                        'width': 35,
+                        'height': 30,
+                        'onError': function (event, queueID, fileObj, errorObj) {
+                            alert(" 上传失败" + errorObj.info + "错误类型" + errorObj.type);
+                        },
+                        'onComplete': function (event, queueID, fileObj, response, data) {
+                            if (response != '') {
+                                /* var date = jQuery.parseJSON(response)*/
+                                var imgurl = '$imgTempServerModule.getTarget('img_pic')/' + response;
+                                $(node).parent('.screen_del').html('<input value="' + response + '" type="hidden"  class="uploadimg"/><img src="' + imgurl + '" width="123" height="198">')
+                            } else {
+                                alert('上传失败!');
+                            }
+                        }
+                    });
+                }
+
+                PicUpload($('#J-plus1'), 'QueuePic');
+                PicUpload($('#J-plus2'), 'QueuePic');
+                PicUpload($('#J-plus3'), 'QueuePic');
+                PicUpload($('#J-plus4'), 'QueuePic');
+                PicUpload($('#J-plus5'), 'QueuePic');
+
+                $('.delete').each(function (i, node) {
+                    $(node).on('click', function (e) {
+                        e.preventDefault();
+                        var divNode = '<div class="plus" id="J-plus' + (i + 1) + '"><a href="#"><img src="/appstore-man/images/plus.png"/></a></div>';
+                        $(node).parent('.screenshot').children('.screen_del').html(divNode);
+                        PicUpload($('#J-plus' + (i + 1) + ''), 'QueuePic');
+                    });
+                });
+            </script>
+        </form>
+    </div>
+    <input type="hidden" id="version"/>
+    <input type="hidden" id="minSdkVersion"/>
+    <input type="hidden" id="packageName"/>
+    <input type="hidden" id="size"/>
+    <input type="hidden" id="apkFileName"/>
+    <input type="hidden" id="versionCode"/>
+    <input type="hidden" id="appId"/>
+    <input type="hidden" id="categoryid1"/>
+    <input type="hidden" id="categoryid2"/>
+
+    <div class="dbbtn">
+        <input id="J-save-btn" value="保 存" type="button" class="btn_bg fl" onclick="saveApk();">
+        <input id="J-btn" type="hidden" value="0"/>
+        <input id="J-back-btn" value="返 回" type="button" class="btn_bg fl" onclick="goBack();">
+    </div>
+</div>

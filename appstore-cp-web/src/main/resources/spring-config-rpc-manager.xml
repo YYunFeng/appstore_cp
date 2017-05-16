@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-autowire="byName">
+
+    <!-- jss云存储 -->
+    <bean id="jssAppManager" class="com.jd.digital.common.rpc.manager.jss.impl.JssAppManagerImpl">
+        <property name="accessKey" value="${appstore-cp.jss.accessKey}"/>
+        <property name="secertKey" value="${appstore-cp.jss.secertKey}"/>
+        <property name="bucketName" value="${appstore-cp.jss.bucketName}"/>
+    </bean>
+
+    <!-- 图片 -->
+    <bean id="imageManager" class="com.jd.digital.common.rpc.manager.img.impl.ImageManagerImpl">
+        <property name="uploadImgAuthCode" value="${appstore-cp.image.uploadImgAuthCode}"/>
+    </bean>
+
+
+    <!-- 评价 -->
+    <bean id="commentManager" class="com.jd.digital.common.rpc.manager.comment.impl.CommentManagerImpl"/>
+
+
+    <!-- 用户信息 -->
+    <bean id="userInfoManager" class="com.jd.digital.common.rpc.manager.userinfo.impl.UserInfoManagerImpl">
+        <property name="headUrl" value="${appstore-cp.userinfo.headUrl}"/>
+    </bean>
+</beans>

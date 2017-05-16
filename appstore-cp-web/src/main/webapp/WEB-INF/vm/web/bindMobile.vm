@@ -1,0 +1,124 @@
+#set($layout="ajax.vm")
+<script language="javascript">
+    var img = new Array();
+    for (i = 0; i < 2; i++) {
+        img[i] = false;
+    }
+    function img_chk(sb) {
+        if (eval("img[" + sb + "]") == false) {
+            document.getElementById(sb).src = "images/checkbox.png";
+            eval("img[" + sb + "]=true");
+        } else {
+            document.getElementById(sb).src = "images/checkbox_hover.png";
+            eval("img[" + sb + "]=false");
+        }
+    }
+
+    function getAuthCode() {
+        var mobileNum = $('#mobileNum').val();
+        jQuery.ajax({
+                    type:"POST",
+                    data:"bindMobileMess.mobileNum=" + mobileNum,
+                    url:"/dev/getMess.action",
+                    dataType:"json",
+                    success:function(data) {
+                        $('#messAddress').val(data.code)
+                    }
+                });
+    }
+    function bindMoblie() {
+        var authCode = $('#authCode').val();
+        var messAddress =$('#messAddress').val();
+      
+
+    }
+</script>
+<div class="right fr rounded">
+    <div class="top radius overflow"> 绑定手机</div>
+    <div class="trip_3">
+        <div class="sms"><img src="/appstore-man/images/sms.png"/></div>
+        <span>绑定手机号,可第一时间知晓产品上下线信息.</span></div>
+    <div class="cotBox">
+        <div class="trip_4">
+
+            <!--未绑定-->
+            <div class="nobindbox">
+                <p class="form-row">
+                    <label class="label">手机号码:</label>
+                    <input id="mobileNum" class="uipt1" type="text" name="username"/>
+                </p>
+
+                <p class="form-row">
+                    <label class="label">验证码:</label>
+                    <input id="authCode" class="vipt2" type="text" name="vcode"/>
+                    <input onclick="getAuthCode();" value="获 取" type="button" class="org_btn" id="bindMobile"/>
+                </p>
+
+                <div class="btn">
+                    <input onclick="bindMoblie();" value="绑 定" type="button" class="btn_bg">
+                </div>
+            </div>
+
+            <!--已绑定-->
+            <div class="bindbox hide">
+                <h1>已绑定手机号&nbsp;<em class="red">135******12</em></h1>
+
+                <p><a class="bule" href="#bind_trip"
+                      onclick="document.getElementById('bind_trip').style.display='block';">更改号码</a><a class="bule"
+                                                                                                       href="#">取消绑定</a>
+                </p>
+
+                <p><img id="1" name="chkUpdatePrompt" src="/appstore-man/images/checkbox_hover.png"
+                        onclick="img_chk(this.id);"/><em>更新提示</em>
+                </p>
+
+                <p><span>付费产品到期提前通知,保障切身利益</span></p>
+            </div>
+
+        </div>
+        <div id="bind_trip">
+            <div class="title">应用发布中心</div>
+            <div id="close" onclick="document.getElementById('bind_trip').style.display='none';"></div>
+            <div class="con">
+                <form name="" method="post" action="" onsubmit="">
+                    <div class="lsBd2">
+                        <label class="bt">原有手机号：</label>
+                        <label class="nr">
+                            <input id="" name="" class="ipt2" maxlength="25" type="text">
+                        </label>
+                        <label class="ts"></label>
+                    </div>
+                    <div class="lsBd2 hlsBd2">
+                        <label class="bt">所 在 地：</label>
+                        <label class="nr">
+                            <select id="documentType" name="documentType" class="slt slt2">
+                                <option selected value="">中国大陆</option>
+                                <option value="0">中国大陆</option>
+                                <option value="1">中国大陆</option>
+                            </select>
+
+                            <div class="ts">请先选择您所在的地域</div>
+                        </label>
+                        <label class="ts"></label>
+                    </div>
+                    <div class="lsBd2 hlsBd2">
+                        <label class="bt">新手机号：</label>
+                        <label class="nr">
+                            <div class="code green">0086 -</div>
+                            <input name="" class="ipt2" maxlength="25" type="text">
+
+                            <div class="ts">如：13581989912</div>
+                        </label>
+                        <label class="ts"></label>
+                    </div>
+                    <div class="clr"></div>
+                    <div class="dbbtn">
+                        <input onclick="" value="绑定手机" type="button" class="btn_bg">
+                    </div>
+                </form>
+            </div>
+            <div class="clr"></div>
+            <input type="hidden" id="messAddress"/>
+        </div>
+    </div>
+</div>

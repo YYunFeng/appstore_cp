@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AppResource">
+    <typeAlias alias="AppResource" type="com.jd.appstore.domain.AppResource"/>
+
+    <insert id="createAppResource" parameterClass="AppResource">
+        insert into tb_app_resource
+        (res_id,appid,accountid,res_type,cap_seq,res_url,is_copy,zhuowangMark,created,modified)
+        values
+        (#resId#,#appId#,#accountId#,#resType#,#capSeq#,#resUrl#,#isCopy#,#zhuowangMark#,now(),#modified#);
+    </insert>
+    <update id="updateAppResource" parameterClass="AppResource">
+        update
+          tb_app_resource
+        set
+          is_copy = 1
+        where
+          appid = #appId#
+        and
+          accountid = #accountId#
+        and
+          res_type = #resType#
+    </update>
+    <delete id="deteteAppRes" parameterClass="AppResource">
+         delete
+         from 
+            tb_app_resource
+         where
+            appid = #appId#
+         and
+            accountid = #accountId#
+         and
+            is_copy =1
+    </delete>
+</sqlMap>

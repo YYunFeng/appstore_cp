@@ -1,0 +1,299 @@
+#set($layout="ajax.vm")
+<script type="text/javascript" src="$assetModule.getTarget("/appstore-man/js/jquery-1.7.1.js")"></script>
+<link rel="stylesheet" href="$assetModule.getTarget("/appstore-man/js/uploadify-v2.1.4/uploadify.css")" type="text/css"
+      media="screen"/>
+<script type="text/javascript" src="$assetModule.getTarget("/appstore-man/js/uploadify-v2.1.4/swfobject.js")"></script>
+<script type="text/javascript"
+        src="$assetModule.getTarget("/appstore-man/js/uploadify-v2.1.4/jquery.uploadify.v2.1.4.min.js")"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#uploadify").uploadify({
+                    'uploader' : '/appstore-man/js/uploadify-v2.1.4/uploadify.swf',
+                    'script' : '$homeModule.getTarget("/upload/uploadWeb.action")',//后台处理的请求
+                    'cancelImg' : '/appstore-man/js/uploadify-v2.1.4/cancel.png',
+                    'fileDataName':'uploadFile',//服务器端根据这个接收文件
+                    'queueID' : 'fileQueue',//与下面的id对应
+                    'queueSizeLimit' : 1,
+                    'fileDesc' : 'FALSH文件',
+                    'fileExt' : '*.swf', //控制可上传文件的扩展名，启用本项时需同时声明fileDesc
+                    'auto' : true,
+                    'multi' : true,
+                    'simUploadLimit' : 2,
+                    'buttonImg' : '/appstore-man/images/uploadweb.png',
+                    'onError' : function(event, queueID, fileObj, errorObj) {
+                        alert(" 上传失败" + errorObj.info + "错误类型" + errorObj.type);
+                    },
+                    'onComplete' : function(event, queueID, fileObj, response, data) {
+                        if (response != '') {
+                            $('#webfileName').val(response);
+                            $('#mess').removeClass('hide');
+                        } else {
+                            alert('上传失败!');
+                        }
+                    }
+                });
+    });
+
+    $("#uploadlogo").uploadify({
+                'uploader' : '/appstore-man/js/uploadify-v2.1.4/uploadify.swf',
+                'script' : '$homeModule.getTarget("/upload/uploadLogo.action")',//后台处理的请求
+                'cancelImg' : '/appstore-man/js/uploadify-v2.1.4/cancel.png',
+                'fileDataName':'uploadFile',//服务器端根据这个接收文件
+                'queueID' : 'Queue',//与下面的id对应
+                'queueSizeLimit' : 1,
+                'fileDesc' : '请选择jpg,png文件',
+                'fileExt' : '*.png;*.jpg', //控制可上传文件的扩展名，启用本项时需同时声明fileDesc
+                'formData' : { "appLogo" : '1'},
+                'auto' : true,
+                'multi' : true,
+                'simUploadLimit' : 2,
+                'buttonImg' : '/appstore-man/images/uploadlogo.png',
+                'onError' : function(event, queueID, fileObj, errorObj) {
+                    alert(" 上传失败" + errorObj.info + "错误类型" + errorObj.type);
+                },
+                'onComplete' : function(event, queueID, fileObj, response, data) {
+                    if (response != '') {
+                        var imgurl = '$imgServerModule.getTarget('')cover/' + response;
+                        $('#picurl').val(response);
+                        $('#pic').attr('src', imgurl);
+                    } else {
+                        alert('上传失败!');
+                    }
+                }
+            });
+
+    function saveWeb() {
+        var saveflag = $('#J-btn').val();
+        if (saveflag == 0) {
+            $('#J-btn').val('1');
+            var appId = $('#appId').val();
+            var type = $('#type').val();
+            var webfileName = $('#webfileName').val();
+            var webUrl = $('#webUrl').val();
+            var logourl = $('#picurl').val();
+            var appName = $('#appName').val();
+            var categoryIdL2 = $('#categoryid1').val();
+            var categoryId1 = $('#categoryid2').val();
+            var introduce = $('#app_introduce').val();
+            var version = $('#version').val();
+            var tag = $('#app_tag').val();
+            var fileName = '';
+            var isAppLogo = $('#appLogo').val();
+            var updateStatus = $('#update_Status').val();
+            var Id = $("#appdetialId").val();
+            var appType = $('#appType').val();
+            if (type == 2) {
+                fileName = webfileName;
+            }
+            if (type == 3) {
+                fileName = webUrl;
+            }
+            if (appName == '') {
+                alert('请输入应用名称!');
+                $('#J-btn').val('0');
+            } else if (version == '') {
+                alert('请填写Web版本!');
+                $('#J-btn').val('0');
+            } else if (logourl == '') {
+                alert('请上传应用Logo!');
+                $('#J-btn').val('0');
+            } else if (introduce == '') {
+                alert('请输入应用简介!');
+                $('#J-btn').val('0');
+            } else {
+                introduce = encodeURI(introduce);
+                appName = encodeURI(appName);
+                tag = encodeURI(tag);
+                jQuery.ajax({
+                            type:"POST",
+                            url:"/dev/saveModifyWeb.action",
+                            data:{
+                                "appResource.resType":type,
+                                "appResource.resUrl":fileName,
+                                "appDetailLog.logoUrl":logourl,
+                                "appDetailLog.appVersion":version,
+                                "appDetailLog.feeMode":'0',
+                                "appDetailLog.price":'0',
+                                "appDetailLog.appIntroduce":introduce,
+                                "appDetailLog.appTag":tag,
+                                "appDetailLog.updateStatus":updateStatus,
+                                "appDetailLog.appLogo":isAppLogo,
+                                "appDetailLog.Id": Id,
+                                "appLog.appName":appName,
+                                "appLog.appId":appId,
+                                "appLog.appType":appType
+                            },
+                            dataType:"json",
+                            success:function(data) {
+                                if (data.status) {
+                                    updateTree();
+                                } else {
+                                    alert(data.msg);
+                                    $('#J-btn').val('0');
+                                }
+                            }
+                        });
+            }
+        }
+    }
+    function checkCategory(val) {
+        document.getElementById("cate").innerHTML = "";
+        $('#categoryid1').val(val);
+        if (val == 0) {
+            var selectCategory = document.getElementById("cate");
+            var cate = new Option('请选择');
+            selectCategory.add(cate);
+        } else {
+            jQuery.ajax({
+                        type:'post',
+                        url:"/dev/getCategory.action",
+                        data:"id=" + val,
+                        dataType:"json",
+                        success:function(data) {
+                            var selectCategory = document.getElementById("cate");
+                            for (var i = 0; i < data.map.categorys.length; i++) {
+                                $('#categoryid2').val(data.map.categorys[i].categoryId);
+                                var cate = new Option(data.map.categorys[i].categoryName, data.map.categorys[i].categoryId + "");
+                                selectCategory.add(cate);
+                            }
+                        }
+                    });
+        }
+    }
+
+    function getValue(val) {
+        $('#categoryid2').val(val);
+    }
+
+    function selectType(val) {
+        if (val == '') {
+            $('#webBag').addClass('hide');
+            $('#webAddress').addClass('hide');
+        }
+        if (val == 2) {
+            $('#webBag').removeClass('hide');
+            $('#webAddress').addClass('hide');
+            $('#webUrl').val('');
+        }
+        if (val == 3) {
+            $('#webAddress').removeClass('hide');
+            $('#webBag').addClass('hide');
+            $('#mess').addClass('hide');
+            $('#webfileName').val('');
+        }
+    }
+</script>
+<div class="right rounded">
+    <div class="top radius overflow">Web应用编辑</div>
+    <div class="cotBox">
+        <form name="" method="post" action="" onsubmit="">
+            <div class="lsBd1">
+                <label class="bt"><em class="red">*</em>请选择上传的类型：</label>
+                <select name="type" class="slt slt2" onchange="selectType(this.value);" id="type">
+                    <option value="">请选择</option>
+                    <option value="2" #if($apps.appResource.resType==2)selected="selected" #end>web应用包</option>
+                    <option value="3" #if($apps.appResource.resType==3)selected="selected" #end>web应用地址</option>
+                </select>
+            </div>
+
+            <div class="lsBd1 #if($apps.appResource.resType==3)hide #end" id="webBag">
+                <label class="bt"><em class="red">*</em>上传FAlSH：</label>
+                <span id="mess" class="fl">已上传&nbsp;&nbsp;</span>
+                <label class="wnr">
+                    <input type="file" name="uploadify" id="uploadify"/>
+                    <input type="hidden" id="apkname"/>
+
+                    <div id="fileQueue"></div>
+                    <div class="apk_info hide" id="apkmess">
+                    </div>
+                </label>
+                <label class="ts"></label>
+            </div>
+
+            <div class="lsBd1 #if($apps.appResource.resType==2)hide #end" id="webAddress">
+                <label class="bt"><em class="red">*</em>URL地址：</label>
+                <label class="nr">
+                    <input id="webUrl" name="" class="ipt1" maxlength="200" type="text"
+                           value="$!stringEscapeUtils.escapeHtml($apps.appResource.resUrl)">
+                </label>
+                <label class="ts"></label>
+            </div>
+
+            <div class="lsBd1">
+                <label class="bt"><em class="red">*</em>名　　称：</label>
+                <label class="nr">
+                    <span>$!stringEscapeUtils.escapeHtml($!apps.appName)</span>
+                </label>
+                <label class="ts"></label>
+            </div>
+            <div class="lsBd1">
+                <label class="bt"><em class="red">*</em>版 本：</label>
+                <label class="nr">
+                    <input id="version" class="ipt1" maxlength="25" type="text"
+                           value="$!stringEscapeUtils.escapeHtml($!apps.appVersion)"/>
+                    <span id="ver_sion"></span>
+                </label>
+                <label class="ts"></label>
+            </div>
+            <div class="lsBd5">
+                <label class="bt"><em class="red">*</em>应用logo：</label>
+
+                <input type="hidden" id="picurl" class="hide" value="$!apps.logoUrl"/>
+
+                <div class="nr fl">
+                    <div class="default fl">
+                    #* #set($logoPath=$PicResolutionEnumLogo+$!apps.logoUrl)*#
+                        <img src="$imgServerModule.getTarget('')cover/$!apps.logoUrl"
+                             width="85" height="85" id="pic"/>
+                    </div>
+                    <div class="va fl">
+                        <input type="file" name="upload" id="uploadlogo"
+                               class="upbtn"/>
+                    </div>
+                    <div class="fl">
+                        <div id="Queue"></div>
+                    </div>
+                    <div class="ts">格式为JPG或者PNG，建议图片大小200*200</div>
+                </div>
+                <label class="ts"></label>
+            </div>
+
+            <div class="lsBd1">
+                <label class="bt"><em class="red">*</em>应用分类：</label>
+              <span class="nr fl">
+                $!apps.categoryId_l2Name &nbsp;&nbsp; $!apps.categoryId1Name
+              </span>
+                <label class="ts"></label>
+            </div>
+
+            <div class="lsBd3">
+                <label class="bt"><em class="red">*</em>详情描述：</label>
+                <label class="nr">
+                    <textarea id="app_introduce" name="" class="ipt4" maxlength="2000">$!apps.appIntroduce</textarea>
+                </label>
+                <label class="ts"></label>
+            </div>
+
+            <div class="lsBd1">
+                <label class="bt">关键词：</label>
+                <label class="nr">
+                    <input id="app_tag" name="" value="$!stringEscapeUtils.escapeHtml($!apps.appTag)" class="ipt1"
+                           maxlength="200" type="text">
+                    <label class="ts">请用英文逗号隔开</label>
+                </label>
+            </div>
+        </form>
+    </div>
+    <div class="dbbtn">
+        <input id="J-save-btn" value="保 存" type="button" class="btn_bg fl" onclick="saveWeb();">
+        <input id="J-btn" type="hidden" value="0"/>
+        <input id="J-back-btn" value="返 回" type="button" class="btn_bg fl" onclick="goBack();">
+    </div>
+    <input type="hidden" id="appName" value="$!apps.appName"/>
+    <input type="hidden" id="appId" value="$!apps.appId"/>
+    <input type="hidden" id="webfileName" value="$apps.appResource.resUrl"/>
+    <input type="hidden" id="appLogo" value="$!apps.appLogo"/>
+    <input type="hidden" id="update_Status" value="$!apps.updateStatus"/>
+    <input type="hidden" id="appdetialId" value="$!apps.Id"/>
+    <input type="hidden" id="appType" value="$!apps.appType"/>
+</div>

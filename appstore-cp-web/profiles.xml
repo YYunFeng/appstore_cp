@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profilesXml xmlns="http://maven.apache.org/PROFILES/1.0.0"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://maven.apache.org/PROFILES/1.0.0 http://maven.apache.org/xsd/profiles-1.0.0.xsd">
+
+    <profiles>
+        <profile>
+            <id>136_online</id>
+            <properties>
+
+                <!-- 开始 第一部分: 登录相关设置 -->
+                <!-- 系统的cookie加密密钥  -->
+                <appstore-cp.cookie.key>xLyhSVcQGix62o+t2fjZyx+bC+zQZCl2</appstore-cp.cookie.key>
+                <!-- 系统的cookie名称 -->
+                <appstore-cp.cookie.name>_applogin_</appstore-cp.cookie.name>
+                <!--erp登录cookie名称 -->
+                <appstore-cp.hrm.auth.cookie.name>ceshi3.com</appstore-cp.hrm.auth.cookie.name>
+                <!--erp登录cookie域 -->
+                <appstore-cp.hrm.auth.cookie.domain>.360buy.com</appstore-cp.hrm.auth.cookie.domain>
+                <!--erp登录cookie解密密钥 -->
+                <appstore-cp.hrm.login.auth.key>8B6697227CBCA902B1A0925D40FAA00B353F2DF4359D2099
+                </appstore-cp.hrm.login.auth.key>
+                <!--登录超时设置 -->
+                <appstore-cp.session.timeout>864000</appstore-cp.session.timeout>
+
+                <!-- 京东主站登录页面 -->
+                <appstore-cp.jd.main.login.url>http://passport.360buy.com/new/login.aspx</appstore-cp.jd.main.login.url>
+                <!-- 京东主站注册页面 -->
+                <appstore-cp.jd.main.register.url>http://passport.360buy.com/new/registpersonal.aspx
+                </appstore-cp.jd.main.register.url>
+                <!-- 当前站注册页面 -->
+                <appstore-cp.register.url>http://${appstore.cp.domain.name}/regist/regist.action
+                </appstore-cp.register.url>
+
+
+                <appstore.cp.log.level>INFO</appstore.cp.log.level>
+                <appstore.cp.log.path>/data/logs/ppad_huasheng/tomcat/${appstore.cp.domain.name}</appstore.cp.log.path>
+                <!--<appstore.cp.log.path>/home/app-cp/logs/${appstore.cp.domain.name}</appstore.cp.log.path>-->
+
+                <appstore.cp.memcached1.address>127.0.0.1:11211</appstore.cp.memcached1.address>
+                <!-- <appstore.cp.memcached2.address>10.10.224.208:11218</appstore.cp.memcached2.address>-->
+
+                <appstore.cp.struts.devMode>true</appstore.cp.struts.devMode>
+
+
+                <appstore.cp.domain.name>cp.appstore.taotaojing.cn</appstore.cp.domain.name>
+                <appstore.cp.asset.domain.name>cp.appstore.taotaojing.cn</appstore.cp.asset.domain.name>
+
+                <appstore.cp.imgserver.domain.name>img30.360buyimg.com/${appstore.cp.imgserver.business.name}
+                </appstore.cp.imgserver.domain.name>
+                <appstore.cp.imgserver.business.name>test</appstore.cp.imgserver.business.name>
+                <appstore.cp.cover.img.domain.name>img10.360buyimg.com/appstore</appstore.cp.cover.img.domain.name>
+
+                <!--上传APK和图片的保存目录-->
+                <appstore.cp.filepath.android.apk>/data/www/img.appstore.taotaojing.cn/apk/
+                </appstore.cp.filepath.android.apk>
+                <appstore.cp.filepath.web.swf>/data/www/img.appstore.taotaojing.cn/swf/
+                </appstore.cp.filepath.web.swf>
+                <appstore.cp.filepath.cover.pic>/data/www/img.appstore.taotaojing.cn/cover/
+                </appstore.cp.filepath.cover.pic>
+                <appstore.cp.filepath.img.pic>/data/www/img.appstore.taotaojing.cn/img_pic/
+                </appstore.cp.filepath.img.pic>
+
+                <appstore.cp.filepath.excel.path>/data/www/img.appstore.taotaojing.cn/cp_app_installmess_excel/
+                </appstore.cp.filepath.excel.path>
+
+                <appstore.cp.filepath.picPath>http://img.appstore.taotaojing.cn/
+                </appstore.cp.filepath.picPath>
+
+                <appstore.cp.filepath.recImage>http://img.appstore.taotaojing.cn/recImage/
+                </appstore.cp.filepath.recImage>
+
+
+                <appstore.cp.category.game.id>9</appstore.cp.category.game.id>
+                <appstore.cp.category.soft.id>10</appstore.cp.category.soft.id>
+                <appstore.cp.category.web.id>11</appstore.cp.category.web.id>
+
+                <appstore.cp.jdbc.datasource.type>dbcp</appstore.cp.jdbc.datasource.type>
+                <appstore.cp.jdbc.driver>com.mysql.jdbc.Driver</appstore.cp.jdbc.driver>
+                <!--  <appstore.cp.jdbc.url>jdbc:mysql://172.16.18.250:3306/ppad?characterEncoding=UTF-8
+                  </appstore.cp.jdbc.url>-->
+
+                <appstore.cp.jdbc.url>jdbc:mysql://172.16.18.8:3306/ppad?characterEncoding=UTF-8
+                </appstore.cp.jdbc.url>
+                <appstore.cp.jdbc.username>ppad</appstore.cp.jdbc.username>
+                <appstore.cp.jdbc.password>ppadA0b1c900d8</appstore.cp.jdbc.password>
+
+            </properties>
+        </profile>
+
+
+        <profile>
+            <id>development</id>
+            <properties>
+                <!-- 开始 第一部分: 登录相关设置 -->
+                <!-- 系统的cookie加密密钥  -->
+                <appstore-cp.cookie.key>xLyhSVcQGix62o+t2fjZyx+bC+zQZCl2</appstore-cp.cookie.key>
+                <!-- 系统的cookie名称 -->
+                <appstore-cp.cookie.name>_applogin_</appstore-cp.cookie.name>
+                <!--erp登录cookie名称 -->
+                <appstore-cp.hrm.auth.cookie.name>ceshi3.com</appstore-cp.hrm.auth.cookie.name>
+                <!--erp登录cookie域 -->
+                <appstore-cp.hrm.auth.cookie.domain>.360buy.com</appstore-cp.hrm.auth.cookie.domain>
+                <!--erp登录cookie解密密钥 -->
+                <appstore-cp.hrm.login.auth.key>8B6697227CBCA902B1A0925D40FAA00B353F2DF4359D2099
+                </appstore-cp.hrm.login.auth.key>
+                <!--登录超时设置 -->
+                <appstore-cp.session.timeout>864000</appstore-cp.session.timeout>
+
+                <appstore.cp.log.level>INFO</appstore.cp.log.level>
+                <appstore.cp.log.path>D:/data/tomcat/logs/${appstore.cp.domain.name}</appstore.cp.log.path>
+
+                <appstore.cp.memcached1.address>182.92.79.56:11211</appstore.cp.memcached1.address>
+
+                <appstore.cp.struts.devMode>true</appstore.cp.struts.devMode>
+
+
+                <appstore.cp.domain.name>localhost:8083</appstore.cp.domain.name>
+
+                <!--上传APK和图片的保存目录-->
+                <appstore.cp.filepath.android.apk>D:/data/apk/
+                </appstore.cp.filepath.android.apk>
+                <appstore.cp.filepath.web.swf>D:/data/swf/
+                </appstore.cp.filepath.web.swf>
+                <appstore.cp.filepath.cover.pic>D:/data/cover/
+                </appstore.cp.filepath.cover.pic>
+                <appstore.cp.filepath.img.pic>D:/data/img_pic/
+                </appstore.cp.filepath.img.pic>
+                <appstore.cp.filepath.excel.path>D:/data/cp_app_installmess_excel/
+                </appstore.cp.filepath.excel.path>
+
+
+
+                <appstore.cp.filepath.excel>http://img.appstore.taotaojing.cn/
+                </appstore.cp.filepath.excel>
+
+
+                <!--<appstore.cp.filepath.picPath>http://img.appstore.taotaojing.cn/
+                </appstore.cp.filepath.picPath>-->
+
+                <!--正式的Bucket地址-->
+                <appstore.cp.filepath.picPath>http://liuxingyuan-ppad-leyu.oss-cn-beijing.aliyuncs.com/
+                </appstore.cp.filepath.picPath>
+
+                <!--临时的Bucket地址-->
+                <appstore.cp.filepath.tempPicPath>http://liuxingyuan-ppad-temp.oss-cn-beijing.aliyuncs.com/
+                </appstore.cp.filepath.tempPicPath>
+
+
+                <appstore.cp.filepath.recImage>http://img.appstore.taotaojing.cn/recImage/
+                </appstore.cp.filepath.recImage>
+
+
+                <appstore.cp.category.game.id>9</appstore.cp.category.game.id>
+                <appstore.cp.category.soft.id>10</appstore.cp.category.soft.id>
+
+                <!-- <appstore.cp.jdbc.datasource.type>dbcp</appstore.cp.jdbc.datasource.type>
+                 <appstore.cp.jdbc.driver>com.mysql.jdbc.Driver</appstore.cp.jdbc.driver>
+                 <appstore.cp.jdbc.url>jdbc:mysql://10.10.224.128:3359/appstore?characterEncoding=UTF-8
+                 </appstore.cp.jdbc.url>
+                 <appstore.cp.jdbc.username>appstore_rw</appstore.cp.jdbc.username>
+                 <appstore.cp.jdbc.password>ad0989FFGG</appstore.cp.jdbc.password>-->
+                <appstore.cp.jdbc.datasource.type>dbcp</appstore.cp.jdbc.datasource.type>
+                <appstore.cp.jdbc.driver>com.mysql.jdbc.Driver</appstore.cp.jdbc.driver>
+                <appstore.cp.jdbc.url>jdbc:mysql://192.168.1.119:3306/appstore?characterEncoding=UTF-8
+                </appstore.cp.jdbc.url>
+                <appstore.cp.jdbc.username>root</appstore.cp.jdbc.username>
+                <appstore.cp.jdbc.password>platomix6815</appstore.cp.jdbc.password>
+
+                <!--阿里云的开放存储配置-->
+                <appstore-cp.aliyun.bucketName>liuxingyuan-ppad-leyu</appstore-cp.aliyun.bucketName>
+                <appstore-cp.aliyun.accessKeyId>LgHZPO39U1Tl2htk</appstore-cp.aliyun.accessKeyId>
+                <appstore-cp.aliyun.accessKeySecret>sRcDCpDJRfVSxyXSSESeF8KoLkW8LM</appstore-cp.aliyun.accessKeySecret>
+                <!--存放临时文件的bucket-->
+                <appstore-cp.aliyun.tempbucketName>liuxingyuan-ppad-temp</appstore-cp.aliyun.tempbucketName>
+                <appstore-cp.aliyun.endpoint>http://oss-cn-beijing.aliyuncs.com</appstore-cp.aliyun.endpoint>
+
+            </properties>
+        </profile>
+
+
+
+        <profile>
+            <id>leyu</id>
+            <properties>
+                <!-- 开始 第一部分: 登录相关设置 -->
+                <!-- 系统的cookie加密密钥  -->
+                <appstore-cp.cookie.key>xLyhSVcQGix62o+t2fjZyx+bC+zQZCl2</appstore-cp.cookie.key>
+                <!-- 系统的cookie名称 -->
+                <appstore-cp.cookie.name>_applogin_</appstore-cp.cookie.name>
+                <!--erp登录cookie名称 -->
+                <appstore-cp.hrm.auth.cookie.name>ceshi3.com</appstore-cp.hrm.auth.cookie.name>
+                <!--erp登录cookie域 -->
+                <appstore-cp.hrm.auth.cookie.domain>.360buy.com</appstore-cp.hrm.auth.cookie.domain>
+                <!--erp登录cookie解密密钥 -->
+                <appstore-cp.hrm.login.auth.key>8B6697227CBCA902B1A0925D40FAA00B353F2DF4359D2099
+                </appstore-cp.hrm.login.auth.key>
+                <!--登录超时设置 -->
+                <appstore-cp.session.timeout>864000</appstore-cp.session.timeout>
+
+                <appstore.cp.log.level>INFO</appstore.cp.log.level>
+                <appstore.cp.log.path>/alidata1/logs/leyu/${appstore.cp.domain.name}</appstore.cp.log.path>
+
+                <appstore.cp.memcached1.address>127.0.0.1:11211</appstore.cp.memcached1.address>
+
+                <appstore.cp.struts.devMode>true</appstore.cp.struts.devMode>
+
+
+                <appstore.cp.domain.name>cp.leyu.taotaojing.cn</appstore.cp.domain.name>
+
+                <!--上传APK和图片的保存目录-->
+                <appstore.cp.filepath.android.path>/alidata1/www/img.leyu.taotaojing.cn/</appstore.cp.filepath.android.path>
+                <appstore.cp.filepath.android.apk>${appstore.cp.filepath.android.path}apk/
+                </appstore.cp.filepath.android.apk>
+                <appstore.cp.filepath.web.swf>${appstore.cp.filepath.android.path}swf/
+                </appstore.cp.filepath.web.swf>
+                <appstore.cp.filepath.cover.pic>${appstore.cp.filepath.android.path}cover/
+                </appstore.cp.filepath.cover.pic>
+                <appstore.cp.filepath.img.pic>${appstore.cp.filepath.android.path}img_pic/
+                </appstore.cp.filepath.img.pic>
+                <appstore.cp.filepath.excel.path>${appstore.cp.filepath.android.path}cp_app_installmess_excel/
+                </appstore.cp.filepath.excel.path>
+
+                <!--<appstore.cp.filepath.picPath>http://img.appstore.taotaojing.cn/
+                </appstore.cp.filepath.picPath>-->
+
+                <!--正式的Bucket地址-->
+                <appstore.cp.filepath.picPath>http://liuxingyuan-ppad-leyu.oss-cn-beijing.aliyuncs.com/
+                </appstore.cp.filepath.picPath>
+
+                <!--临时的Bucket地址-->
+                <appstore.cp.filepath.tempPicPath>http://liuxingyuan-ppad-temp.oss-cn-beijing.aliyuncs.com/
+                </appstore.cp.filepath.tempPicPath>
+
+
+                <appstore.cp.filepath.recImage>http://img.appstore.taotaojing.cn/recImage/
+                </appstore.cp.filepath.recImage>
+
+
+                <appstore.cp.filepath.excel>http://img.appstore.taotaojing.cn/
+                </appstore.cp.filepath.excel>
+
+
+                <appstore.cp.category.game.id>9</appstore.cp.category.game.id>
+                <appstore.cp.category.soft.id>10</appstore.cp.category.soft.id>
+
+
+                <appstore.cp.jdbc.datasource.type>dbcp</appstore.cp.jdbc.datasource.type>
+                <appstore.cp.jdbc.driver>com.mysql.jdbc.Driver</appstore.cp.jdbc.driver>
+                <appstore.cp.jdbc.url>jdbc:mysql://rdserabfrerabfr.mysql.rds.aliyuncs.com/ppad_leyu?characterEncoding=UTF-8
+                </appstore.cp.jdbc.url>
+                <appstore.cp.jdbc.username>ppad_leyu</appstore.cp.jdbc.username>
+                <appstore.cp.jdbc.password>platomix6815</appstore.cp.jdbc.password>
+
+                <!--阿里云的开放存储配置-->
+                <appstore-cp.aliyun.bucketName>liuxingyuan-ppad-leyu</appstore-cp.aliyun.bucketName>
+                <appstore-cp.aliyun.accessKeyId>LgHZPO39U1Tl2htk</appstore-cp.aliyun.accessKeyId>
+                <appstore-cp.aliyun.accessKeySecret>sRcDCpDJRfVSxyXSSESeF8KoLkW8LM</appstore-cp.aliyun.accessKeySecret>
+                <!--存放临时文件的bucket-->
+                <appstore-cp.aliyun.tempbucketName>liuxingyuan-ppad-temp</appstore-cp.aliyun.tempbucketName>
+                <appstore-cp.aliyun.endpoint>http://oss-cn-beijing-internal.aliyuncs.com</appstore-cp.aliyun.endpoint>
+
+            </properties>
+        </profile>
+
+
+        <profile>
+            <id>huasheng</id>
+            <properties>
+                <!-- 开始 第一部分: 登录相关设置 -->
+                <!-- 系统的cookie加密密钥  -->
+                <appstore-cp.cookie.key>xLyhSVcQGix62o+t2fjZyx+bC+zQZCl2</appstore-cp.cookie.key>
+                <!-- 系统的cookie名称 -->
+                <appstore-cp.cookie.name>_applogin_</appstore-cp.cookie.name>
+                <!--erp登录cookie名称 -->
+                <appstore-cp.hrm.auth.cookie.name>ceshi3.com</appstore-cp.hrm.auth.cookie.name>
+                <!--erp登录cookie域 -->
+                <appstore-cp.hrm.auth.cookie.domain>.360buy.com</appstore-cp.hrm.auth.cookie.domain>
+                <!--erp登录cookie解密密钥 -->
+                <appstore-cp.hrm.login.auth.key>8B6697227CBCA902B1A0925D40FAA00B353F2DF4359D2099
+                </appstore-cp.hrm.login.auth.key>
+                <!--登录超时设置 -->
+                <appstore-cp.session.timeout>864000</appstore-cp.session.timeout>
+
+                <appstore.cp.log.level>INFO</appstore.cp.log.level>
+                <appstore.cp.log.path>/alidata1/logs/huasheng/${appstore.cp.domain.name}</appstore.cp.log.path>
+
+                <appstore.cp.memcached1.address>127.0.0.1:11211</appstore.cp.memcached1.address>
+
+                <appstore.cp.struts.devMode>true</appstore.cp.struts.devMode>
+
+
+                <appstore.cp.domain.name>cp.appstore.taotaojing.cn</appstore.cp.domain.name>
+
+                <!--上传APK和图片的保存目录-->
+                <appstore.cp.filepath.android.path>/alidata1/www/img.appstore.taotaojing.cn/</appstore.cp.filepath.android.path>
+                <appstore.cp.filepath.android.apk>${appstore.cp.filepath.android.path}apk/
+                </appstore.cp.filepath.android.apk>
+                <appstore.cp.filepath.web.swf>${appstore.cp.filepath.android.path}swf/
+                </appstore.cp.filepath.web.swf>
+                <appstore.cp.filepath.cover.pic>${appstore.cp.filepath.android.path}cover/
+                </appstore.cp.filepath.cover.pic>
+                <appstore.cp.filepath.img.pic>${appstore.cp.filepath.android.path}img_pic/
+                </appstore.cp.filepath.img.pic>
+                <appstore.cp.filepath.excel.path>${appstore.cp.filepath.android.path}cp_app_installmess_excel/
+                </appstore.cp.filepath.excel.path>
+
+                <!--<appstore.cp.filepath.picPath>http://img.appstore.taotaojing.cn/
+                </appstore.cp.filepath.picPath>-->
+
+                <!--正式的Bucket地址-->
+                <appstore.cp.filepath.picPath>http://liuxingyuan-ppad-huasheng.oss-cn-beijing.aliyuncs.com/
+                </appstore.cp.filepath.picPath>
+
+                <!--临时的Bucket地址-->
+                <appstore.cp.filepath.tempPicPath>http://liuxingyuan-ppad-temp.oss-cn-beijing.aliyuncs.com/
+                </appstore.cp.filepath.tempPicPath>
+
+
+                <appstore.cp.filepath.recImage>http://img.appstore.taotaojing.cn/recImage/
+                </appstore.cp.filepath.recImage>
+
+
+                <appstore.cp.filepath.excel>http://img.appstore.taotaojing.cn/
+                </appstore.cp.filepath.excel>
+
+                <appstore.cp.category.game.id>9</appstore.cp.category.game.id>
+                <appstore.cp.category.soft.id>10</appstore.cp.category.soft.id>
+
+
+                <appstore.cp.jdbc.datasource.type>dbcp</appstore.cp.jdbc.datasource.type>
+                <appstore.cp.jdbc.driver>com.mysql.jdbc.Driver</appstore.cp.jdbc.driver>
+                <appstore.cp.jdbc.url>jdbc:mysql://rdserabfrerabfr.mysql.rds.aliyuncs.com/ppad_huasheng?characterEncoding=UTF-8
+                </appstore.cp.jdbc.url>
+                <appstore.cp.jdbc.username>ppad_huasheng</appstore.cp.jdbc.username>
+                <appstore.cp.jdbc.password>platomix6815</appstore.cp.jdbc.password>
+
+                <!--阿里云的开放存储配置-->
+                <appstore-cp.aliyun.bucketName>liuxingyuan-ppad-huasheng</appstore-cp.aliyun.bucketName>
+                <appstore-cp.aliyun.accessKeyId>LgHZPO39U1Tl2htk</appstore-cp.aliyun.accessKeyId>
+                <appstore-cp.aliyun.accessKeySecret>sRcDCpDJRfVSxyXSSESeF8KoLkW8LM</appstore-cp.aliyun.accessKeySecret>
+                <!--存放临时文件的bucket-->
+                <appstore-cp.aliyun.tempbucketName>liuxingyuan-ppad-temp</appstore-cp.aliyun.tempbucketName>
+                <appstore-cp.aliyun.endpoint>http://oss-cn-beijing-internal.aliyuncs.com</appstore-cp.aliyun.endpoint>
+
+            </properties>
+        </profile>
+
+
+        <profile>
+            <id>bestbuy</id>
+            <properties>
+                <!-- 开始 第一部分: 登录相关设置 -->
+                <!-- 系统的cookie加密密钥  -->
+                <appstore-cp.cookie.key>xLyhSVcQGix62o+t2fjZyx+bC+zQZCl2</appstore-cp.cookie.key>
+                <!-- 系统的cookie名称 -->
+                <appstore-cp.cookie.name>_applogin_</appstore-cp.cookie.name>
+                <!--erp登录cookie名称 -->
+                <appstore-cp.hrm.auth.cookie.name>ceshi3.com</appstore-cp.hrm.auth.cookie.name>
+                <!--erp登录cookie域 -->
+                <appstore-cp.hrm.auth.cookie.domain>.360buy.com</appstore-cp.hrm.auth.cookie.domain>
+                <!--erp登录cookie解密密钥 -->
+                <appstore-cp.hrm.login.auth.key>8B6697227CBCA902B1A0925D40FAA00B353F2DF4359D2099
+                </appstore-cp.hrm.login.auth.key>
+                <!--登录超时设置 -->
+                <appstore-cp.session.timeout>864000</appstore-cp.session.timeout>
+
+                <appstore.cp.log.level>INFO</appstore.cp.log.level>
+                <appstore.cp.log.path>/alidata1/logs/bestbuy/${appstore.cp.domain.name}</appstore.cp.log.path>
+
+                <appstore.cp.memcached1.address>127.0.0.1:11211</appstore.cp.memcached1.address>
+
+                <appstore.cp.struts.devMode>true</appstore.cp.struts.devMode>
+
+
+                <appstore.cp.domain.name>cp.bestbuy.taotaojing.cn</appstore.cp.domain.name>
+
+                <!--上传APK和图片的保存目录-->
+                <appstore.cp.filepath.android.path>/alidata1/www/img.bestbuy.taotaojing.cn/</appstore.cp.filepath.android.path>
+                <appstore.cp.filepath.android.apk>${appstore.cp.filepath.android.path}apk/
+                </appstore.cp.filepath.android.apk>
+                <appstore.cp.filepath.web.swf>${appstore.cp.filepath.android.path}swf/
+                </appstore.cp.filepath.web.swf>
+                <appstore.cp.filepath.cover.pic>${appstore.cp.filepath.android.path}cover/
+                </appstore.cp.filepath.cover.pic>
+                <appstore.cp.filepath.img.pic>${appstore.cp.filepath.android.path}img_pic/
+                </appstore.cp.filepath.img.pic>
+                <appstore.cp.filepath.excel.path>${appstore.cp.filepath.android.path}cp_app_installmess_excel/
+                </appstore.cp.filepath.excel.path>
+
+                <!--<appstore.cp.filepath.picPath>http://img.appstore.taotaojing.cn/
+                </appstore.cp.filepath.picPath>-->
+
+                <!--正式的Bucket地址-->
+                <appstore.cp.filepath.picPath>http://liuxingyuan-ppad-bestbuy.oss-cn-beijing.aliyuncs.com/
+                </appstore.cp.filepath.picPath>
+
+                <!--临时的Bucket地址-->
+                <appstore.cp.filepath.tempPicPath>http://liuxingyuan-ppad-temp.oss-cn-beijing.aliyuncs.com/
+                </appstore.cp.filepath.tempPicPath>
+
+
+                <appstore.cp.filepath.recImage>http://img.bestbuy.taotaojing.cn/recImage/
+                </appstore.cp.filepath.recImage>
+
+
+                <appstore.cp.filepath.excel>http://img.bestbuy.taotaojing.cn/
+                </appstore.cp.filepath.excel>
+
+
+                <appstore.cp.category.game.id>9</appstore.cp.category.game.id>
+                <appstore.cp.category.soft.id>10</appstore.cp.category.soft.id>
+
+
+                <appstore.cp.jdbc.datasource.type>dbcp</appstore.cp.jdbc.datasource.type>
+                <appstore.cp.jdbc.driver>com.mysql.jdbc.Driver</appstore.cp.jdbc.driver>
+                <appstore.cp.jdbc.url>jdbc:mysql://rdserabfrerabfr.mysql.rds.aliyuncs.com/ppad_bestbuy?characterEncoding=UTF-8
+                </appstore.cp.jdbc.url>
+                <appstore.cp.jdbc.username>ppad_bestbuy</appstore.cp.jdbc.username>
+                <appstore.cp.jdbc.password>platomix6815</appstore.cp.jdbc.password>
+
+                <!--阿里云的开放存储配置-->
+                <appstore-cp.aliyun.bucketName>liuxingyuan-ppad-bestbuy</appstore-cp.aliyun.bucketName>
+                <appstore-cp.aliyun.accessKeyId>LgHZPO39U1Tl2htk</appstore-cp.aliyun.accessKeyId>
+                <appstore-cp.aliyun.accessKeySecret>sRcDCpDJRfVSxyXSSESeF8KoLkW8LM</appstore-cp.aliyun.accessKeySecret>
+                <!--存放临时文件的bucket-->
+                <appstore-cp.aliyun.tempbucketName>liuxingyuan-ppad-temp</appstore-cp.aliyun.tempbucketName>
+                <appstore-cp.aliyun.endpoint>http://oss-cn-beijing-internal.aliyuncs.com</appstore-cp.aliyun.endpoint>
+
+            </properties>
+        </profile>
+
+        <profile>
+            <id>wifi</id>
+            <properties>
+                <!-- 开始 第一部分: 登录相关设置 -->
+                <!-- 系统的cookie加密密钥  -->
+                <appstore-cp.cookie.key>xLyhSVcQGix62o+t2fjZyx+bC+zQZCl2</appstore-cp.cookie.key>
+                <!-- 系统的cookie名称 -->
+                <appstore-cp.cookie.name>_applogin_</appstore-cp.cookie.name>
+                <!--erp登录cookie名称 -->
+                <appstore-cp.hrm.auth.cookie.name>ceshi3.com</appstore-cp.hrm.auth.cookie.name>
+                <!--erp登录cookie域 -->
+                <appstore-cp.hrm.auth.cookie.domain>.360buy.com</appstore-cp.hrm.auth.cookie.domain>
+                <!--erp登录cookie解密密钥 -->
+                <appstore-cp.hrm.login.auth.key>8B6697227CBCA902B1A0925D40FAA00B353F2DF4359D2099
+                </appstore-cp.hrm.login.auth.key>
+                <!--登录超时设置 -->
+                <appstore-cp.session.timeout>864000</appstore-cp.session.timeout>
+
+                <appstore.cp.log.level>INFO</appstore.cp.log.level>
+                <appstore.cp.log.path>/alidata1/logs/wifi/${appstore.cp.domain.name}</appstore.cp.log.path>
+
+                <appstore.cp.memcached1.address>127.0.0.1:11211</appstore.cp.memcached1.address>
+
+                <appstore.cp.struts.devMode>true</appstore.cp.struts.devMode>
+
+
+                <appstore.cp.domain.name>cp.wifi.taotaojing.cn</appstore.cp.domain.name>
+
+                <!--上传APK和图片的保存目录-->
+                <appstore.cp.filepath.android.path>/alidata1/www/img.wifi.taotaojing.cn/</appstore.cp.filepath.android.path>
+                <appstore.cp.filepath.android.apk>${appstore.cp.filepath.android.path}apk/
+                </appstore.cp.filepath.android.apk>
+                <appstore.cp.filepath.web.swf>${appstore.cp.filepath.android.path}swf/
+                </appstore.cp.filepath.web.swf>
+                <appstore.cp.filepath.cover.pic>${appstore.cp.filepath.android.path}cover/
+                </appstore.cp.filepath.cover.pic>
+                <appstore.cp.filepath.img.pic>${appstore.cp.filepath.android.path}img_pic/
+                </appstore.cp.filepath.img.pic>
+                <appstore.cp.filepath.excel.path>${appstore.cp.filepath.android.path}cp_app_installmess_excel/
+                </appstore.cp.filepath.excel.path>
+
+                <!--<appstore.cp.filepath.picPath>http://img.appstore.taotaojing.cn/
+                </appstore.cp.filepath.picPath>-->
+
+                <!--正式的Bucket地址-->
+                <appstore.cp.filepath.picPath>http://liuxingyuan-ppad-wifi.oss-cn-beijing.aliyuncs.com/
+                </appstore.cp.filepath.picPath>
+
+                <!--临时的Bucket地址-->
+                <appstore.cp.filepath.tempPicPath>http://liuxingyuan-ppad-temp.oss-cn-beijing.aliyuncs.com/
+                </appstore.cp.filepath.tempPicPath>
+
+
+                <appstore.cp.filepath.recImage>http://img.wifi.taotaojing.cn/recImage/
+                </appstore.cp.filepath.recImage>
+
+
+                <appstore.cp.filepath.excel>http://img.wifi.taotaojing.cn/
+                </appstore.cp.filepath.excel>
+
+                <appstore.cp.category.game.id>9</appstore.cp.category.game.id>
+                <appstore.cp.category.soft.id>10</appstore.cp.category.soft.id>
+
+
+                <appstore.cp.jdbc.datasource.type>dbcp</appstore.cp.jdbc.datasource.type>
+                <appstore.cp.jdbc.driver>com.mysql.jdbc.Driver</appstore.cp.jdbc.driver>
+                <appstore.cp.jdbc.url>jdbc:mysql://rdserabfrerabfr.mysql.rds.aliyuncs.com/ppad_wifi?characterEncoding=UTF-8
+                </appstore.cp.jdbc.url>
+                <appstore.cp.jdbc.username>ppad_wifi</appstore.cp.jdbc.username>
+                <appstore.cp.jdbc.password>platomix6815</appstore.cp.jdbc.password>
+
+                <!--阿里云的开放存储配置-->
+                <appstore-cp.aliyun.bucketName>liuxingyuan-ppad-wifi</appstore-cp.aliyun.bucketName>
+                <appstore-cp.aliyun.accessKeyId>LgHZPO39U1Tl2htk</appstore-cp.aliyun.accessKeyId>
+                <appstore-cp.aliyun.accessKeySecret>sRcDCpDJRfVSxyXSSESeF8KoLkW8LM</appstore-cp.aliyun.accessKeySecret>
+                <!--存放临时文件的bucket-->
+                <appstore-cp.aliyun.tempbucketName>liuxingyuan-ppad-temp</appstore-cp.aliyun.tempbucketName>
+                <appstore-cp.aliyun.endpoint>http://oss-cn-beijing-internal.aliyuncs.com</appstore-cp.aliyun.endpoint>
+
+            </properties>
+        </profile>
+
+
+    </profiles>
+
+</profilesXml>

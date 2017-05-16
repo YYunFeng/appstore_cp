@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CpReginfo">
+
+    <typeAlias alias="CpReginfo" type="com.jd.appstore.domain.CpReginfo"/>
+
+    <resultMap id="CpReginfoResultMap" class="CpReginfo">
+        <result property="id" column="id" nullValue="0"/>
+        <result property="accountId" column="accountid"/>
+        <result property="isCopy" column="is_copy"/>
+        <result property="ename" column="ename"/>
+        <result property="certificateType" column="certificate_type"/>
+        <result property="certificateNo" column="certificate_no"/>
+        <result property="certificatePhoto" column="certificate_photo"/>
+        <result property="webadd" column="webadd"/>
+        <result property="contacter" column="contacter"/>
+        <result property="address" column="address"/>
+        <result property="phone" column="phone"/>
+        <result property="fax" column="fax"/>
+        <result property="mobile" column="mobile"/>
+        <result property="mobileBinded" column="mobile_binded"/>
+        <result property="email" column="email"/>
+        <result property="emailChecked" column="email_checked"/>
+        <result property="intro" column="intro"/>
+        <result property="otherContact" column="other_contact"/>
+        <result property="created" column="created"/>
+        <result property="modified" column="modified"/>
+        <result property="provinceId" column="province_id"/>
+        <result property="cityId" column="city_id"/>
+        <result property="districtId" column="district_id"/>
+        <result property="province" column="province"/>
+        <result property="city" column="city"/>
+        <result property="district" column="district"/>
+    </resultMap>
+
+    <insert id="createCpReginfo" parameterClass="CpReginfo">
+        insert into tb_cp_reginfo
+        (id,accountid,is_copy,ename,certificate_type,certificate_no,certificate_photo,webadd,contacter,address,
+        phone,fax,mobile,mobile_binded,email,email_checked,intro,other_contact,created,modified)
+        values
+        (#id#,#accountId#,#isCopy#,#ename#,#certificateType#,#certificateNo#,#certificatePhoto#,#webadd#,#contacter#,#address#,
+        #phone#,#fax#,#mobile#,#mobileBinded#,#email#,#emailChecked#,#intro#,#otherContact#,now(),#modified#)
+    </insert>
+
+    <select id="findCpReginfos" resultMap="CpReginfo.CpReginfoResultMap">
+        select id,accountid,is_copy,ename,certificate_type,certificate_no,certificate_photo,webadd,contacter,address,
+        update_status,update_comment,contract_number,valid_period_begin,
+        phone,fax,mobile,mobile_binded,email,email_checked,intro,other_contact,created,modified from tb_cp_reginfo
+    </select>
+
+    <delete id="delCpCpReginfo" parameterClass="CpReginfo">
+        delete from tb_cp_reginfo where id=#id#
+    </delete>
+
+</sqlMap>

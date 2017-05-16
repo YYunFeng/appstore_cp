@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Apps">
+    <typeAlias alias="Apps" type="com.jd.appstore.domain.Apps"/>
+    <typeAlias alias="AppDetails" type="com.jd.appstore.domain.AppDetails"/>
+    <insert id="createApps" parameterClass="Apps">
+        insert into tb_apps (
+           appid,app_name,package,app_type,categoryid_l2,categoryid1,default_detail_id,online,zhuowangMark,
+           created,modified
+        )values(
+           #appId#,#appName#,#pkg#,#appType#,#categoryidL2#,#categoryId1#,#defaultDetailId#,#online#,#zhuowangMark#,now(),#modified#
+        )
+    </insert>
+    <select id="authApk" parameterClass="Apps" resultClass="Apps">
+        select
+            a.appid as appId,
+            a.app_name as appName,
+            a.package as pkg,
+            a.app_type as appType,
+            a.categoryid_l2 as categoryidL2,
+            a.categoryid1 as categoryId1,
+            a.default_detail_id as defaultDetailId,
+            a.online as online,
+            a.created as created,
+            a.modified as modified
+        from
+          	tb_apps as  a
+        where
+            package=#pkg#
+    </select>
+     <select id="findAppsByAppId" parameterClass="int" resultClass="Apps">
+        select
+            a.appid as appId,
+            a.app_name as appName,
+            a.package as pkg,
+            a.app_type as appType,
+            a.categoryid_l2 as categoryidL2,
+            a.categoryid1 as categoryId1,
+            a.default_detail_id as defaultDetailId,
+            a.online as online,
+            a.created as created,
+            a.modified as modified
+        from
+          	tb_apps as  a
+        where
+            appId = #appId#
+    </select>
+    <select id="getApkDetails" parameterClass="int" resultClass="AppDetails">
+         select
+            accountid as accountId,
+            fee_mode as feeMode
+         from
+            tb_app_details
+         where
+            appid = #appId#
+    </select>
+     <select id="getApkDetailLog" parameterClass="int" resultClass="com.jd.appstore.domain.AppDetailLog">
+         select
+            accountid as accountId,
+            fee_mode as feeMode
+         from
+            tb_app_detail_log
+         where
+            appid = #appId#
+         and
+            valid = 0
+    </select>
+     <!-- 验证是否可以上传应用-->
+      <select parameterClass="Apps" resultClass="Integer" id="verifyButUploading">
+        SELECT
+            detailsLog.fee_mode AS detailsLogFreeMode
+        FROM
+            (
+                SELECT
+                    appid
+                FROM
+                    tb_apps
+                WHERE
+                    package = #pkg#
+            ) AS appid,
+            tb_app_detail_log AS detailsLog
+        WHERE
+            detailsLog.appid = appid.appid
+        AND detailsLog.fee_mode = 1
+        UNION
+            SELECT
+                detailsLog.fee_mode AS detailsLogFreeMode
+            FROM
+                (
+                    SELECT
+                        appid
+                    FROM
+                        tb_apps
+                    WHERE
+                        package = #pkg#
+                ) AS appid,
+                tb_app_detail_log AS detailsLog
+            WHERE
+                detailsLog.appid = appid.appid
+            AND detailsLog.accountid = #accountId#
+      </select>
+</sqlMap>

@@ -1,0 +1,53 @@
+#set($layout="ajax.vm")
+<script type="text/javascript">
+    // 分页
+    function macroAjaxSubmit(url) {
+        loadTickAlert('加载中....');
+        var startTime = $("#d5221").val();
+        var endTime = $("#d5222").val();
+        var appid = $("#appid").val();
+        jQuery.ajax({
+            type: "GET",
+            url: url,
+            dataType: "html",
+            data: {"countAppParameter.startTime": startTime,
+                "countAppParameter.endTime": endTime,
+                "countAppParameter.appid": appid
+            },
+            success: function (msg) {
+                jQuery('#countApps').html(msg);
+                closeTickAlert();
+            }
+        });
+    }
+</script>
+<div class="mt">
+  <span class="total1">
+        <strong>应用名称</strong>
+    </span>
+    <span class="total">
+        <strong>串号</strong>
+    </span>
+    <span class="total">
+        <strong>手机型号</strong>
+    </span>
+    <span class="total">
+        <strong>安装时间</strong>
+    </span>
+
+</div>
+#foreach($result in $countAppsPhoneImei)
+<ul>
+    <li>
+        <span class="total1">$!result.appName</span>
+        <span class="total">$!result.phoneImei</span>
+        <span class="total">$!result.phoneModelName</span>
+        <span class="total">$!result.installTime</span>
+    </li>
+</ul>
+#end
+
+<div id="paging" style="float: right">
+    #set($pageModule = $homeModule.getTarget("/datacenter/countAppsPhoneImei.action").addQueryData("pageSize",$!pageSize))
+        #showPage($pageModule $countAppsPhoneImei)
+</div>

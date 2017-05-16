@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <constant name="struts.enable.DynamicMethodInvocation" value="false"/>
+    <constant name="struts.devMode" value="${appstore.cp.struts.devMode}"/>
+    <constant name="struts.objectFactory" value="spring"/>
+    <constant name="struts.objectFactory.spring.autoWire " value="type"/>
+    <constant name="struts.i18n.encoding" value="UTF-8"/>
+    <constant name="struts.custom.i18n.resources" value="message/message"/>
+    <constant name="struts.multipart.maxSize" value="1000000000"/>
+
+    <package name="appstore-default" extends="struts-default">
+        <result-types>
+            <result-type name="velocity" class="com.jd.common.struts.velocity.VelocityLayoutResult" default="true">
+                <param name="toolsBeanId">velocityTools</param>
+                <param name="urlBeanId">velocityUrl</param>
+            </result-type>
+        </result-types>
+        <interceptors>
+            <interceptor name="loginContext"
+                         class="com.jd.appstore.web.interceptor.cp.JdAppStoreLoginContextInterceptor"/>
+            <interceptor name="appstroeInterceptor"
+                         class="com.jd.appstore.web.interceptor.cp.AppStoreLoginInterceptor"/>
+            <interceptor-stack name="appstorestack">
+                <interceptor-ref name="defaultStack"/>
+                <interceptor-ref name="loginContext"/>
+                <interceptor-ref name="appstroeInterceptor"/>
+            </interceptor-stack>
+        </interceptors>
+        <default-interceptor-ref name="appstorestack"/>
+        <global-results>
+            <result name="exception">/WEB-INF/vm/error.vm</result>
+            <result name="error">/WEB-INF/vm/error.vm</result>
+            <result name="login" type="redirect">/index.action</result>
+            <!-- <result name="loginJd" type="redirect">${jdMainLoginUrl}</result>-->
+            <result name="cpRegister" type="redirect">/regist/regist.action</result>
+        </global-results>
+        <global-exception-mappings>
+            <exception-mapping exception="java.lang.Exception" result="exception"/>
+        </global-exception-mappings>
+    </package>
+
+    <package name="appsotre-json-common" namespace="/" extends="json-default">
+        <result-types>
+            <result-type name="json" class="org.apache.struts2.json.JSONResult" default="true"/>
+        </result-types>
+        <interceptors>
+            <interceptor name="loginContext"
+                         class="com.jd.appstore.web.interceptor.cp.JdAppStoreLoginContextInterceptor"/>
+            <interceptor name="appstroeInterceptor"
+                         class="com.jd.appstore.web.interceptor.cp.AppStoreLoginInterceptor"/>
+            <interceptor-stack name="appstorestack">
+                <interceptor-ref name="defaultStack"/>
+                <interceptor-ref name="loginContext"/>
+                <interceptor-ref name="appstroeInterceptor"/>
+            </interceptor-stack>
+        </interceptors>
+        <default-interceptor-ref name="appstorestack"/>
+    </package>
+
+    <include file="struts-index.xml"/>
+    <include file="struts-regist.xml"/>
+    <include file="struts-devcenter.xml"/>
+    <include file="struts-upload.xml"/>
+    <include file="struts-authcode.xml"/>
+    <include file="struts-datacenter.xml"/>
+</struts>

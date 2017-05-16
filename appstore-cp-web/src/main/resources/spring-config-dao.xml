@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-autowire="byName">
+
+    <bean id="defaultSequence" class="com.jd.common.util.Sequence"/>
+
+    <bean id="sequenceUtil" class="com.jd.common.util.SequenceUtil">
+        <property name="defaultSequence" ref="defaultSequence"/>
+    </bean>
+
+    <bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="configLocation" value="classpath:sqlmap-config.xml"/>
+    </bean>
+
+    <bean id="cpBaseinfoDao" class="com.jd.appstore.dao.cp.impl.CpBaseinfoDaoImpl"/>
+    <bean id="cpReginfoDao" class="com.jd.appstore.dao.cp.impl.CpReginfoDaoImpl"/>
+    <bean id="indexDao" class="com.jd.appstore.dao.cp.impl.IndexDaoImpl"/>
+    <bean id="devCenterDao" class="com.jd.appstore.dao.cp.impl.DevCenterDaoImpl"/>
+    <bean id="dataCenterDao" class="com.jd.appstore.dao.cp.impl.DataCenterDaoImpl"/>
+    <bean id="getAddressDao" class="com.jd.appstore.dao.cp.impl.GetAddressDaoImpl"/>
+    <bean id="getOsVersionIdDao" class="com.jd.appstore.dao.cp.impl.GetOsVersionIdDaoImpl"/>
+    <bean id="aliyunDao" class="com.jd.appstore.dao.cp.impl.AliyunDaoImpl"/>
+
+</beans>

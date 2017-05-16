@@ -1,0 +1,108 @@
+#set($layout="ajax.vm")
+<link rel="stylesheet" href="$assetModule.getTarget("/appstore-man/css/comments.css")" type="text/css">
+<script>
+    // 分页
+    function macroAjaxSubmit(url) {
+        var appId = $('#app_id').val();
+        var score = $('#score').val();
+        jQuery.ajax({
+                    type:"GET",
+                    url:url,
+                    dataType:"html",
+                    data:"getComment.appId=" + appId + "&getComment.score=" + score,
+                    success:function(msg) {
+                        jQuery('#comcontent').html(msg);
+                        $('#' + score).addClass("curr");
+                    }
+                });
+    }
+
+    $(".tab li").click(function() {
+        var appId = $('#app_id').val();
+        $(".tab li").removeClass();
+        var commentId = $(this).attr("id");
+        $('#score').val(commentId);
+        if (commentId) {
+            var object = document.getElementById(commentId);
+            if (object)object.className += "curr";
+        }
+        getComment(appId);
+    });
+
+</script>
+<!--comment_start-->
+<div id="comment" data-widget="tabs">
+    <ul class="tab">
+        <li data="0" data-widget="tab-item" id="0">全部评论($!summary.commentCount)<strong
+                ></strong><span></span>
+        </li>
+        #set($very =$!summary.score4Count+$!summary.score5Count)
+        #set($ordinary =$!summary.score3Count+$!summary.score2Count)
+        <li data="5" data-widget="tab-item" id="5">好评($!very)<strong></strong><span></span></li>
+        <li data="3" data-widget="tab-item" id="3">中评($!ordinary)<strong></strong><span></span></li>
+        <li data="1" data-widget="tab-item" id="1">差评($!summary.score1Count)<strong></strong><span></span></li>
+    </ul>
+    #set($goodpercent = $!summary.goodRate+'px')
+    #set($ordinarypercent = $!summary.middleRate+'px')
+    #set($badpercent = $!summary.poorRate+'px')
+    <div class="mc tabcon" id="comment-0" data-widget="tab-content">
+        <div class="i-comment">
+            <div class="rate"><strong>$!summary.goodRate%</strong> <br>
+                好评度
+            </div>
+            <div class="percent">
+                <dl>
+                    <dt>好评</dt>
+                    <dd class="d1">
+                        <div style="width:$goodpercent;"></div>
+                    </dd>
+                    <dd class="d2">$!summary.goodRate%</dd>
+                </dl>
+                <dl>
+                    <dt>中评</dt>
+                    <dd class="d1">
+                        <div style="width:$ordinarypercent;"></div>
+                    </dd>
+                    <dd class="d2">$!summary.middleRate%</dd>
+                </dl>
+                <dl>
+                    <dt>差评</dt>
+                    <dd class="d1">
+                        <div style="width:$badpercent;"></div>
+                    </dd>
+                    <dd class="d2">$!summary.poorRate%</dd>
+                </dl>
+            </div>
+        </div>
+        #foreach($comment in $commentlist)
+            <div class="item">
+                <div class="user">
+                    <div class="u-icon">
+                        <a target="_blank">
+                            <img width="60" height="60" src="$!comment.userInfoObj.smallImgUrl" upin=""/>
+                        </a>
+                    </div>
+                    <div class="u-name">
+                        <a target="_blank"> $!comment.userInfoObj.pin</a>
+                    </div>
+                    <span class="u-level"> <font style="color:#000000"> $!comment.userInfoObj.levelName </font> </span>
+
+                </div>
+                <div class="i-item">
+                    <div class="o-topic"><strong class="topic"> <a target="_blank">$!comment.subject</a>
+                    </strong></strong><span class="m_star m_$!comment.score"></span>
+                        <span  class="date-comment"> $!comment.dateTime</span></div>
+                    <div class="comment-content">
+                        <p style="width:600px; overflow: hidden;">$!stringEscapeUtils.escapeHtml($!comment.content)</p>
+                    </div>
+                </div>
+                <div class="corner tl"></div>
+            </div>
+        #end
+        <div id="paging">
+            #set($pageModule = $homeModule.getTarget("/dev/comment.action").addQueryData("pageSize",$!pageSize))
+            #showPage($pageModule $commentlist)
+        </div>
+    </div>
+</div>
+

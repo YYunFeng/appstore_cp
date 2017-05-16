@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="dev" namespace="/dev" extends="appstore-default">
+        <action name="*" method="{1}" class="com.jd.appstore.web.action.cp.DevCenterAction">
+            <result name="success">/WEB-INF/vm/web/{1}.vm</result>
+        </action>
+        <action name="checkApkOnVerify" method="checkApkOnVerify" class="com.jd.appstore.web.action.cp.DevCenterAction">
+            <result name="success">/WEB-INF/vm/web/checkApks.vm</result>
+        </action>
+        <action name="saveApk" method="saveApk" class="com.jd.appstore.web.action.cp.DevCenterAction">
+            <result name="success"></result>
+        </action>
+
+
+        <action name="uploadAliyun" method="uploadAliyun" class="com.jd.appstore.web.action.cp.UploadAliyunAction">
+            <result name="success"></result>
+        </action>
+
+    </package>
+</struts>

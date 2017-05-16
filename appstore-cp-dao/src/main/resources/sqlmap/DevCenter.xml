@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="DevCenter">
+
+    <typeAlias alias="AppDetailLog" type="com.jd.appstore.domain.AppDetailLog"/>
+    <typeAlias alias="AppDetails" type="com.jd.appstore.domain.AppDetails"/>
+    <typeAlias alias="AppLog" type="com.jd.appstore.domain.AppLog"/>
+    <typeAlias alias="Apps" type="com.jd.appstore.domain.Apps"/>
+    <typeAlias alias="CheckApkResult" type="com.jd.appstore.domain.web.CheckApkResult"/>
+    <typeAlias alias="CheckApk" type="com.jd.appstore.domain.paramter.CheckApk"/>
+    <typeAlias alias="StatApks" type="com.jd.appstore.domain.paramter.StatApks"/>
+    <typeAlias alias="AppResource" type="com.jd.appstore.domain.AppResource"/>
+    <typeAlias alias="UserResult" type="com.jd.appstore.domain.web.UserResult"/>
+    <typeAlias alias="CpReginfo" type="com.jd.appstore.domain.CpReginfo"/>
+    <typeAlias alias="CpBaseinfo" type="com.jd.appstore.domain.CpBaseinfo"/>
+
+    <!-- 查看所有应用 -->
+    <select id="findApks" parameterClass="CheckApk" resultClass="CheckApkResult">
+            select
+              appId,
+              appName,
+              appType,
+              categoryId_l2,
+              logoUrl,
+              appVersion,
+              downloadTimes,
+              online,
+              updateStatus,
+              isAppLogo,
+              tab,
+              created
+            from
+              (
+                SELECT
+                      ta.appid as appId,
+                      ta.app_name as appName,
+                      ta.app_type as appType,
+                      ta.categoryid_l2 as categoryId_l2,
+                      tad.logo_url as logoUrl,
+                      tad.app_version as appVersion,
+                      tad.online as online,
+                      tad.is_app_logo as isAppLogo,
+                      tad.update_status as updateStatus,
+                      e.download_times as downloadTimes,
+                      1 as tab,
+                      tad.created as created
+                FROM
+                      tb_app_details tad
+                LEFT JOIN
+                      tb_apps ta
+                ON
+                      tad.appid=ta.appid
+                LEFT JOIN
+                      tb_download_totalstat as e
+                ON
+                      tad.appid = e.appid
+                WHERE
+                      tad.accountid = #accountId#
+                <isNull property="online" prepend="and">
+                     (
+                       update_status=0
+                       OR
+                       update_status=2
+                      )
+                </isNull>
+                <isNotEmpty  property="appName" prepend="AND">
+                ta.app_name LIKE '%$appName$%'
+                </isNotEmpty>
+                <isEqual compareProperty="online" compareValue="1">
+                        and	update_status=0
+                </isEqual>
+                <isEqual compareProperty="online" compareValue="2">
+                        and	tad.online=2
+                </isEqual>
+                UNION ALL
+                select
+                   c.appid as appId,
+                   c.app_name as appName,
+                   c.app_type as appType,
+                   c.categoryid_l2 as categoryId_l2,
+                   d.logo_url as logoUrl,
+                   d.app_version as appVersion,
+                   d.online as online,
+                   d.is_app_logo as isAppLogo,
+                   d.update_status as updateStatus,
+                   e.download_times AS  downloadTimes,
+                   0 as tab,
+                   d.created as created
+                 from
+                   tb_apps as c
+                 LEFT JOIN
+				     tb_app_detail_log AS d
+                 ON
+                     c.appid = d.appid
+                 LEFT JOIN
+                     tb_download_totalstat as e
+			     ON
+                     c.appid = e.appid
+                 where
+                   d.accountid = #accountId#
+                <isNotEmpty  property="appName" prepend="AND">
+                c.app_name LIKE '%$appName$%'
+                </isNotEmpty>
+                 and
+                   <![CDATA[d.update_status<>0]]>
+                 and
+                    d.valid=0
+            ) as t
+            where
+                1=1
+            <isNotNull prepend="and" property="categoryId_l2">
+                  categoryId_l2 =#categoryId_l2#
+            </isNotNull>
+            <isNotNull prepend="and" property="online">
+                  online =#online#
+                and
+                   tab=1
+            </isNotNull>
+            <isNotNull prepend="and" property="updateStatus">
+                  updateStatus =#updateStatus#
+                and
+                   tab=0
+            </isNotNull>
+         ORDER BY
+             created DESC
+         limit
+            #endRow#
+         offset
+            #startRow#
+    </select>
+    <!--计算总应用的数量 -->
+    <select id="findApkCounts" parameterClass="CheckApk" resultClass="int">
+           select
+               count(*)
+            from
+            (
+             SELECT
+                      ta.appid as appId,
+                      ta.app_name as appName,
+                      ta.categoryid_l2 as categoryId_l2,
+                      tad.logo_url as logoUrl,
+                      tad.app_version as appVersion,
+                      tad.online as online,
+                      tad.is_app_logo as isAppLogo,
+                      tad.update_status as updateStatus,
+                      e.download_times as downloadTimes,
+                      1 as tab,
+                      tad.created as created
+                FROM
+                      tb_app_details tad
+                LEFT JOIN
+                      tb_apps ta
+                ON
+                      tad.appid=ta.appid
+                LEFT JOIN
+                      tb_download_totalstat as e
+                ON
+                      tad.appid = e.appid
+                WHERE
+                      tad.accountid = #accountId#
+                <isNull property="online" prepend="and">
+                     (
+                       update_status=0
+                       OR
+                       update_status=2
+                      )
+                </isNull>
+                <isNotEmpty  property="appName" prepend="AND">
+                ta.app_name LIKE '%$appName$%'
+                </isNotEmpty>
+                <isEqual compareProperty="online" compareValue="1">
+                        and	update_status=0
+                </isEqual>
+                <isEqual compareProperty="online" compareValue="2">
+                        and	tad.online=2
+                </isEqual>
+                UNION ALL
+                select
+                   c.appid as appId,
+                   c.app_name as appName,
+                   c.categoryid_l2 as categoryId_l2,
+                   d.app_version as appVersion,
+                   d.online as online,
+                   d.logo_url as logoUrl,
+                   d.is_app_logo as isAppLogo,
+                   d.update_status as updateStatus,
+                   e.download_times AS  downloadTimes,
+                   0 as tab,
+                   d.created as created
+                 from
+                   tb_apps as c
+                 LEFT JOIN
+                     tb_app_detail_log AS d
+                 ON
+                     c.appid = d.appid
+                 LEFT JOIN
+                     tb_download_totalstat as e
+                 ON
+                     c.appid = e.appid
+                 where
+                   d.accountid = #accountId#
+                 and
+                   <![CDATA[d.update_status<>0]]>
+                <isNotEmpty  property="appName" prepend="AND">
+                c.app_name LIKE '%$appName$%'
+                </isNotEmpty>
+                 and
+                    d.valid=0
+                   ) as t
+            where
+                1=1
+            <isNotNull prepend="and" property="categoryId_l2">
+                  categoryId_l2 =#categoryId_l2#
+            </isNotNull>
+            <isNotNull prepend="and" property="online">
+                  online =#online#
+                and
+                   tab=1
+            </isNotNull>
+            <isNotNull prepend="and" property="updateStatus">
+                  updateStatus =#updateStatus#
+                and
+                   tab=0
+            </isNotNull>
+         ORDER BY
+             created DESC
+    </select>
+    <!--从详情日志表中统计应用的数量-->
+    <select  id="statApkByAppDetailsLog" parameterClass="Apps" resultClass="StatApks">
+
+        SELECT
+          a.update_status AS updateStatus,
+          count(id) AS count
+        FROM
+          (select lo.appid,lo.update_status,lo.valid,lo.accountid,lo.id FROM tb_app_detail_log as lo,
+        (select max(id) as idd from tb_app_detail_log
+        GROUP BY appid
+        ) as lb
+        where lo.id = lb.idd
+        ) AS a,
+            tb_apps AS b
+        WHERE
+            a.accountid = #accountId#
+         <isNotNull prepend="and" property="categoryidL2">
+                  b.categoryid_l2 = #categoryidL2#
+         </isNotNull>
+        AND a.appid = b.appid
+        AND valid = 0
+        GROUP BY
+            updateStatus
+    </select>
+    <!--从详情表中统计应用的数量-->
+    <select  id="statApkByAppDetails" parameterClass="Apps" resultClass="StatApks">
+        select
+           a.online as online,
+           count(id) as count
+        from
+           tb_app_details as a ,
+           tb_apps as b
+        where
+           update_status = 0
+         <isNotNull prepend="and" property="categoryidL2">
+                  b.categoryid_l2 = #categoryidL2#
+         </isNotNull>
+        and
+           a.appid = b.appid
+        and
+           accountid = #accountId#
+        group by
+           online
+    </select>
+    <!--按状态查看应用-->
+    <select id="findApkVersity" parameterClass="CheckApk" resultClass="CheckApkResult">
+        select
+          a.id as id,
+          a.app_name as appName,
+          b.appid as appId,
+          b.logo_url as logoUrl,
+          b.app_version as appVersion,
+          b.update_status as updateStatus,
+          b.online as online,
+          b.created as created
+        from
+          tb_app_log as a ,tb_app_detail_log as b
+        where
+          a.appid = b.appid
+        and
+          b.accountid = #accountId#
+        and
+          b.update_status =#updateStatus#
+         limit
+            #endRow#
+         offset
+            #startRow#
+    </select>
+    <!--统计每个状态下的应用数量-->
+    <select id="findApkVersityCount" parameterClass="CheckApk" resultClass="int">
+          select
+            count(*)
+          from
+             (select
+                  a.id as id,
+                  a.app_name as appName,
+                  b.logo_url as logoUrl,
+                  b.app_version as appVersion,
+                  b.online as online,
+                  b.created as created
+            from
+                  tb_app_log as a ,tb_app_detail_log as b
+            where
+                  a.appid = b.appid
+            and
+                  b.accountid = #accountId#
+            and
+                  b.update_status =#updateStatus#) as t
+    </select>
+    <!--从详情日志表中查看应用-->
+    <select id="CheckApkByAppIdFormLog" parameterClass="CheckApk" resultClass="CheckApkResult">
+          select
+             a.app_name as appName,
+             a.app_type as appType,
+             a.default_detail_id as defaultDetailId,
+             a.appid  as appId,
+             a.categoryid_l2 as categoryId_l2,
+             a.categoryid1 as categoryId1,
+             a.package as pkg,
+             b.id as Id,
+             b.logo_url as logoUrl,
+             b.is_app_logo as isAppLogo,
+             b.os_version_id as osVersionId,
+             b.comment as comment,
+             b.price as price,
+             b.app_version as appVersion,
+             b.app_version_code as appVersionCode,
+             b.pkg_size as pkgSize,
+             b.app_introduce as appIntroduce,
+             b.update_status as updateStatus,
+             b.fee_mode as feeMode,
+             b.price as price,
+             b.app_tag  as appTag,
+             b.online as online,
+             b.apkCode as apkCode,
+             b.created as created
+          from
+             tb_apps as a ,tb_app_detail_log as b
+          where
+             a.appid = b.appid
+          and
+             b.appid=#appId#
+          and
+             b.accountid = #accountId#
+          and
+             b.valid = 0
+          and
+            b.update_status=#updateStatus#
+    </select>
+    <!--从详情表中查看应用-->
+     <select id="CheckApkByAppId" parameterClass="CheckApk" resultClass="CheckApkResult">
+          select
+             a.app_name as appName,
+             a.app_type as appType,
+             a.appid  as appId,
+             a.categoryid_l2 as categoryId_l2,
+             a.categoryid1 as categoryId1,
+             b.id as Id,
+             a.package as pkg,
+             b.logo_url as logoUrl,
+             b.price as price,
+             b.is_app_logo as isAppLogo,
+             b.app_version as appVersion,
+             b.app_version_code as appVersionCode,
+             b.os_version_id as osVersionId,
+             b.pkg_size as pkgSize,
+             b.app_introduce as appIntroduce,
+             b.update_status as updateStatus,
+             b.app_tag  as appTag,
+             b.fee_mode as feeMode,
+             b.price as price,
+             b.online as online,
+             b.apkCode as apkCode,
+             b.created as created
+          from
+             tb_apps as a ,tb_app_details as b
+          where
+             a.appid = b.appid
+          and
+             b.appid=#appId#
+          and
+             b.accountid = #accountId#
+    </select>
+    <!--获得资源 包括应用的截图和应用的安装包-->
+    <select id="getAppResource" parameterClass="CheckApk" resultClass="AppResource">
+         select
+             res_id as resId,
+             res_type as resType,
+             res_url as resUrl
+         from
+             tb_app_resource
+         where
+             accountid = #accountId#
+         and
+             appid = #appId#
+         and
+             is_copy = #isCopy#
+         <isNotNull prepend="and" property="resType">
+                 res_type = #resType#
+         </isNotNull>
+
+    </select>
+    <!--查看CP个人基本信息-->
+    <select id="personMess" parameterClass="int" resultClass="UserResult">
+        select
+            a.account as account,
+            a.cp_name as cpName,
+            b.contacter as contacter,
+            b.email as email,
+            b.mobile as mobile,
+            b.province_id as provinceId,
+            b.city_id as cityId,
+            b.district_id as districtId,
+            b.province as province,
+            b.city as city,
+            b.district as district,
+            b.certificate_type as certificateType,
+            b.certificate_no as certificateNo,
+            b.other_contact as otherContact,
+            b.webadd as webadd,
+            b.mobile_binded as mobileBinded,
+            b.address as address,
+            b.fax as fax
+         from
+             tb_cp_baseinfo as a,
+             tb_cp_reginfo as b
+         where
+             b.accountid = a.id
+         and
+             b.accountid = #accountId#
+    </select>
+    <!--更新基本信息表-->
+    <update id="updateBaseinfo" parameterClass="CpBaseinfo">
+            update tb_cp_baseinfo set
+               id = #id#
+              <isNotNull prepend="," property="account">
+                account=#account#
+              </isNotNull>
+              <isNotNull prepend="," property="cpName">
+               cp_name = #cpName#
+              </isNotNull>
+              <isNotNull prepend="," property="password">
+               password =#password#
+              </isNotNull>
+            where id=#id#
+    </update>
+    <!--更新注册信息表-->
+    <update id="updatereginfo" parameterClass="CpReginfo">
+            update tb_cp_reginfo set
+               email = #email#,
+               mobile = #mobile#,
+               certificate_type = #certificateType#,
+               certificate_no = #certificateNo#,
+               <isNotNull  property="contacter">
+               contacter =#contacter# ,
+               </isNotNull>
+               other_contact = #otherContact#,
+               webadd =#webadd#,
+               address = #address#,
+               fax = #fax#,
+               province_id =#provinceId#,
+               city_id =#cityId#,
+               district_id =#districtId#,
+               province = #province#,
+               city = #city#,
+               district = #district#
+            where accountId=#accountId#
+    </update>
+    <!--判断是否可以修改应用-->
+    <select id="isModifyApk" parameterClass="CheckApk" resultClass="int">
+        SELECT
+           count(1)
+        from
+        (SELECT
+               valid
+            from
+             tb_app_detail_log
+            where
+              appid = #appId#
+            and
+              accountid = #accountId#
+            order by id desc
+        limit 1
+        ) as t
+            where
+               valid = 0
+    </select>
+
+
+</sqlMap>

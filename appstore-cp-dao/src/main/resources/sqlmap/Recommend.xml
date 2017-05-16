@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Recommend">
+
+  <typeAlias alias="recommend" type="com.jd.appstore.domain.web.RecommendResult"/>
+
+  <select id="getRecommend"  resultClass="recommend">
+        SELECT
+            id as Id,
+            url as picUrl,
+            linked_url as linkedUrl
+        FROM
+            tb_recommend
+        WHERE
+            client_type = 4
+        AND
+            moduleid = 0
+        AND
+            areaid = 13
+        AND
+            pubed_status = 1
+        ORDER BY
+            seq ASC
+
+  </select>
+</sqlMap>

@@ -1,0 +1,23 @@
+.warp{background:url(../images/app_warp_bg.png) center top no-repeat;height:100%;padding:30px 25px 10px;overflow:hidden;}
+.statistics-box{background:none repeat scroll 0 0 #FFFFFF;border:1px solid #A0BEE0;border-radius:8px 8px 8px 8px;padding:20px; overflow:hidden;}
+.statistics-box .mt,.statistics-box li{height:50px;line-height:50px;font-size:16px;font-family:"微软雅黑";}
+.statistics-box .mt{border-bottom:#ccc solid 1px;}
+.statistics-box .mt strong{ color:#434d5e;}
+.statistics-box li{border-bottom:#ccc dashed 1px;}
+.statistics-box li:hover{color:#4980be;cursor:pointer;border-bottom:#4980be dashed 1px;}
+.statistics-box .tit,.statistics-box .tpsd,.statistics-box .total{display:inline-block;float:left;}
+/*.statistics-box .tit{width:420px;padding-left:40px;}*/
+.statistics-box .tit{width:520px;padding-left:40px;}
+.statistics-box .tpsd{width:380px;}
+.statistics-box .total{width:230px;}
+.statistics-box .total1{width:230px; padding-left: 20px;float:left;}
+.statistics-box .daliang{width:200px;text-align:right;}
+.statistics-box .mc{overflow:hidden;}
+.tjdateCounts{width:940px;margin:25px auto;line-height:26px;}
+.tjdateCounts span{padding:0 10px;}
+.tjdateCounts .Wdate:hover{background-color:#f7f7ec;border:1px solid #6FA3C4;}
+.tjdateCounts .Wdate:focus{background-color:#f7f7ec;border:1px solid #6FA3C4;}
+.tjdateCounts .search{background:url(../images/gray_btn.png) no-repeat;border:0 none;cursor:pointer;height:26px;outline:medium none;width:90px;margin:0 8px;}
+.graphics{width:940px;margin:20px auto;}
+#paging{margin: 15px 15px 0 0;}
+#paging li{border:0;}

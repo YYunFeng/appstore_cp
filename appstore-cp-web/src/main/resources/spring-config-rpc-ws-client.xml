@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--suppress SpringModelInspection -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-autowire="byName">
+
+    <bean id="logIn" class="org.apache.cxf.interceptor.LoggingInInterceptor"/>
+    <bean id="logOut" class="org.apache.cxf.interceptor.LoggingOutInterceptor"/>
+
+
+
+
+    <!-- 上传主图 -->
+    <bean id="myServiceSoap" class="com.jd.digital.common.rpc.client.cover.MyServiceSoap"
+          factory-bean="coverClientFactory" factory-method="create"/>
+    <bean id="coverClientFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="com.jd.digital.common.rpc.client.cover.MyServiceSoap"/>
+        <property name="address" value="${appstore-cp.upload.cover.ws.address}"/>
+    </bean>
+    <!-- 上传主图end -->
+
+
+
+    <!--评论保存接口： zhaoxiangjian 提供-->
+    <bean id="commentHeader" class="com.jd.common.ws.AuthHeader">
+        <property name="content" value="${appstore-cp.comment.ws.content}"/>
+        <property name="seed" value="${appstore-cp.comment.ws.seed}"/>
+    </bean>
+
+    <bean id="commentHeaderIntercepter" class="com.jd.common.ws.SOAPHeaderIntercepter">
+        <property name="authHeader" ref="commentHeader"/>
+    </bean>
+
+    <bean id="commentWebservice" class="com.jd.digital.common.rpc.client.comment.CommentWebservice"
+          factory-bean="commentWebserviceFactory" factory-method="create"/>
+
+    <bean id="commentWebserviceFactory" class="org.apache.cxf.jaxws.JaxWsProxyFactoryBean">
+        <property name="serviceClass" value="com.jd.digital.common.rpc.client.comment.CommentWebservice"/>
+        <property name="address" value="${appstore-cp.comment.ws.address}"/>
+        <property name="inInterceptors">
+            <list>
+                <ref bean="logIn"/>
+            </list>
+        </property>
+        <property name="outInterceptors">
+            <list>
+                <ref bean="logOut"/>
+                <ref bean="commentHeaderIntercepter"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>

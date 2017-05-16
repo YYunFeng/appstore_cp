@@ -1,0 +1,96 @@
+﻿#* @vtlvariable name="module" type="com.jd.common.web.url.JdUrl" *#
+#* @vtlvariable name="page" type="com.jd.common.util.base.PaginatedArrayList" *#
+
+#macro (showPage $module $page)
+    #if($page)
+    #set($pagePosPrev = 5) ##前面尾巴长度
+    #set($pagePosNext = 4) ##后面尾巴长度
+
+    #if($!page.totalPage<=10||$!page.index<=5)
+        #set($pagePosPrev =  $!page.index - 1)
+        #set($pagePosNext = 10 - $!page.index)
+    #elseif($!page.totalPage - $!page.index<=4)
+        #set($pagePosPrev = 10 - ($!page.totalPage - $!page.index) - 1)
+        #set($pagePosNext = $!page.totalPage - $!page.index)
+    #end
+
+    #if($pagePosPrev<1)
+        #set($pagePosPrev = 1)
+    #end
+    #if($!page.totalPage == $!page.index)
+        #set($pagePosNext = 1)
+    #end
+
+    #*总$!{page.totalItem}条记录。*#
+    #if($!page.totalPage>10 && $!page.index - 5 > 1)
+        #if($page.previousPageAvailable) ##如果能向上翻页
+            <a href="javascript:void(0)" onclick="macroAjaxSubmit('$module.addQueryData("page",1).render()');"><div class="home fl "></div></a>
+            <a href="javascript:void(0)" onclick="macroAjaxSubmit('$module.addQueryData("page",$!{page.previousPage}).render()');"><div class="prev fl"></div></a>
+        #end
+    #end
+
+    <ul class="fl">
+    #*#if($!page.index>$pagePos+2) #end ##显示前面的省略号*#
+    #foreach($i in [$pagePosPrev..1]) ##增加前面的尾巴
+        #if($!page.index - $i+1 > 1)
+            #set($pageIndex= $!page.index - $i)
+            <a href="javascript:void(0)" onclick="macroAjaxSubmit('$module.addQueryData("page",$pageIndex).render()');"><li class="pg_num fl">$pageIndex</li></a>
+        #end
+    #end
+    #if($!page.totalPage>1)
+        <span><li id="active" class="pg_num fl">$!page.index</li></span> ##显示当前页号
+    #end
+
+    #foreach($i in [1..$pagePosNext]) ##增加后面的尾巴
+        #if($!page.totalPage - $!page.index - $i+1 > 0)
+            #set($pageIndex= $!page.index + $!i)
+        <a href="javascript:void(0)" onclick="macroAjaxSubmit('$module.addQueryData("page",$pageIndex).render()');"><li class="pg_num fl">$pageIndex</li></a>
+        #end
+    #end
+    </ul>
+    #*#if($!page.totalPage - $!page.index > $pagePos+1) #end ##显示后面的省略号*#
+    <input type="hidden" name="totalPage" value="$!page.totalPage"/>
+    #if($!page.totalPage>10)
+        #if($page.nextPageAvailable) ##显示后面的页
+            <a href="javascript:void(0)" onclick="macroAjaxSubmit('$module.addQueryData("page",$!{page.nextPage}).render()');"><div class="next fl"></div></a>
+            <a href="javascript:void(0)" onclick="macroAjaxSubmit('$module.addQueryData("page",$!{page.totalPage}).render()');"><div class="last fl"></div></a>
+        #end
+    #end
+    $!module.reset()
+    #end
+#end
+
+
+#macro(showSimpleError)
+    #if(!$!actionErrors.empty)
+        #foreach($str in $actionErrors)
+            $!str
+            #break
+        #end
+    #end
+#end
+
+#macro(showError)
+    #if(!$!actionErrors.empty)
+        #foreach($str in $actionErrors)
+        <li>$!str</li>
+        #end
+    #end
+#end
+
+#macro(showSimpleMessage)
+    #if(!$!actionMessages.empty)
+        #foreach($str in $actionErrors)
+            $!str
+            #break
+        #end
+    #end
+#end
+
+#macro(showMessage)
+    #if(!$!actionMessages.empty)
+        #foreach($str in $actionErrors)
+        <li>$!str</li>
+        #end
+    #end
+#end

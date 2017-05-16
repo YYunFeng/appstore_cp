@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-autowire="byName">
+
+    <bean name="velocityTools" class="java.util.HashMap">
+        <constructor-arg>
+            <map>
+                <entry key="stringUtils">
+                    <bean class="org.apache.commons.lang.StringUtils"/>
+                </entry>
+                <entry key="stringEscapeUtils">
+                    <bean class="org.apache.commons.lang.StringEscapeUtils"/>
+                </entry>
+                <entry key="dateFormatUtils">
+                    <bean class="com.jd.common.util.DateFormatUtils"/>
+                </entry>
+                <entry key="dateUtils">
+                    <bean class="org.apache.commons.lang.time.DateUtils"/>
+                </entry>
+                <entry key="localHost">
+                    <bean class="com.jd.common.network.LocalHost"/>
+                </entry>
+                <entry key="categoryUtils">
+                    <bean class="com.jd.appstore.domain.utils.CategoryUtils">
+                        <property name="softCategoryId" value="${appstore.cp.category.soft.id}"/>
+                        <property name="gameCategoryId" value="${appstore.cp.category.game.id}"/>
+                    </bean>
+                </entry>
+                <entry key="filePathUtils">
+                    <bean class="com.jd.appstore.domain.utils.FilePathUtils">
+                        <property name="androidApkPath" value="${appstore.cp.filepath.android.apk}"/>
+                        <property name="imgPicPath" value="${appstore.cp.filepath.img.pic}"/>
+                    </bean>
+                </entry>
+                <entry key="webHelper">
+                    <bean class="com.jd.digital.common.util.tool.WebHelper"/>
+                </entry>
+                <entry key="stringUtils">
+                    <bean class="com.jd.common.util.StringUtils"/>
+                </entry>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="jdUrlUtils" class="com.jd.common.web.url.JdUrlUtils"/>
+    <bean id="velocityUrl" class="java.util.HashMap">
+        <constructor-arg>
+            <map>
+                <entry key="homeModule">
+                    <bean class="com.jd.common.web.url.JdUrl">
+                        <property name="url" value="http://${appstore.cp.domain.name}/"/>
+                    </bean>
+                </entry>
+                <entry key="assetModule">
+                    <bean class="com.jd.common.web.url.JdUrl">
+                        <property name="url" value="http://${appstore.cp.domain.name}/"/>
+                    </bean>
+                </entry>
+                <entry key="imgServerModule">
+                    <bean class="com.jd.common.web.url.JdUrl">
+                        <property name="url" value="${appstore.cp.filepath.picPath}"/>
+                    </bean>
+                </entry>
+
+                <entry key="imgTempServerModule">
+                    <bean class="com.jd.common.web.url.JdUrl">
+                        <property name="url" value="${appstore.cp.filepath.tempPicPath}"/>
+                    </bean>
+                </entry>
+
+                <entry key="recimageserver">
+                    <bean class="com.jd.common.web.url.JdUrl">
+                        <property name="url" value="${appstore.cp.filepath.recImage}"/>
+                    </bean>
+                </entry>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="layoutResult" class="com.jd.common.struts.velocity.VelocityLayoutResult"/>
+
+    <bean id="jdSecurity" class="com.jd.common.web.security.FilePathSecurity">
+        <property name="unProtectedFile">
+            <list>
+                <value>/index.action</value>
+                <value>/exit.action</value>
+                <value>/index/login.action</value>
+                <value>/regist/regist.action</value>
+                <value>/regist/regSuccess.action</value>
+                <value>/regist/authAccount.action</value>
+                <value>/regist/addDeveloper.action</value>
+                <value>/authcode/getAuthCode.action</value>
+                <value>/upload/uploadApk.action</value>
+                <value>/upload/uploadLogo.action</value>
+                <value>/upload/readApk.action</value>
+                <value>/upload/uploadPic.action</value>
+                <value>/upload/uploadWeb.action</value>
+                <value>/dev/getMess.action</value>
+            </list>
+        </property>
+        <property name="unProtectedPath">
+            <list>
+                <value>/help/</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="cookieCipherTools" class="com.jd.common.web.cookie.CookieCipherTools">
+        <property name="charsetName" value="gbk"/>
+    </bean>
+    <bean id="cookieUtils" class="com.jd.common.web.cookie.CookieUtils"/>
+    <bean class="com.jd.common.web.cookie.JdCookie" abstract="true" id="jdEncryptCookie">
+        <property name="encrypt" value="true"/>
+        <property name="key" value="${appstore-cp.cookie.key}"/>
+    </bean>
+    <bean abstract="true" parent="jdEncryptCookie" id="jdLoginCookie">
+        <property name="path" value="/"/>
+        <!--
+        <property name="domain" value=".360buy.net"/>
+        -->
+    </bean>
+    <bean id="jdCookie" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <bean parent="jdLoginCookie">
+                    <property name="name" value="${appstore-cp.cookie.name}"/>
+                </bean>
+                <bean parent="jdLoginCookie">
+                    <property name="name" value="_latn_"/>
+                </bean>
+                <bean class="com.jd.common.web.cookie.JdCookie">
+                    <property name="name" value="${appstore-cp.hrm.auth.cookie.name}"/>
+                    <property name="domain" value="${appstore-cp.hrm.auth.cookie.domain}"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+    <bean class="com.jd.appstore.web.interceptor.cp.JdAppStoreLoginContextInterceptor">
+        <property name="loginCookieKey" value="${appstore-cp.cookie.name}"/>
+        <property name="sessionTimeout" value="${appstore-cp.session.timeout}"/>
+        <property name="dotnetAuthCookieName" value="${appstore-cp.hrm.auth.cookie.name}"/>
+        <property name="dotnetAuthenticationKey" value="${appstore-cp.hrm.login.auth.key}"/>
+    </bean>
+</beans>

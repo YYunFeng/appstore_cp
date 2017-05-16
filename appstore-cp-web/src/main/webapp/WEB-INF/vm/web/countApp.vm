@@ -1,0 +1,51 @@
+#set($layout="ajax.vm")
+<script type="text/javascript">
+    // 分页
+    function macroAjaxSubmit(url) {
+        loadTickAlert('加载中....');
+        var startTime = $("#d5221").val();
+        var endTime = $("#d5222").val();
+        jQuery.ajax({
+            type: "GET",
+            url: url,
+            dataType: "html",
+            data: {"countAppParameter.startTime": startTime,
+                "countAppParameter.endTime": endTime
+            },
+            success: function (msg) {
+                jQuery('#countApps').html(msg);
+                closeTickAlert();
+            }
+        });
+    }
+</script>
+<div class="mt">
+  <span class="tit">
+        <strong>应用名称</strong>
+    </span>
+    <span class="tpsd">
+        <strong>安装量</strong>
+    </span>
+    #*<span class="daliang">
+        <strong>到达量</strong>
+    </span>*#
+</div>
+#foreach($result in $countApps)
+<ul>
+    <li>
+        <span class="tit">$!result.appName</span>
+        <a href="javascript:void(0)" onclick="getPhoneImeiFromInstall($!result.appid,'$!result.appName');">
+            <span class="tpsd">$!result.installCounts 次</span>
+        </a>
+        #*<a href="javascript:void(0)" onclick="countAppsPhoneImei($!result.appid);">
+            <span class="daliang">$!result.countApps 次</span>
+        </a>*#
+    </li>
+</ul>
+
+#end
+
+<div id="paging" style="float: right">
+    #set($pageModule = $homeModule.getTarget("/datacenter/countApp.action").addQueryData("pageSize",$!pageSize))
+        #showPage($pageModule $countApps)
+</div>

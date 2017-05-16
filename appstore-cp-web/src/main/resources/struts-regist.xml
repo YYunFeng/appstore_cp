@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="regist" namespace="/regist" extends="appstore-default">
+        <action name="regist" method="regist" class="com.jd.appstore.web.action.cp.RegistAction">
+            <result name="success">/WEB-INF/vm/web/regist.vm</result>
+            <result name="ERROR">/WEB-INF/vm/error.vm</result>
+        </action>
+        <action name="regSuccess" method="regSuccess" class="com.jd.appstore.web.action.cp.RegistAction">
+            <result name="success">/WEB-INF/vm/web/regSuccess.vm</result>
+        </action>
+    </package>
+    <package name="addDeveloper" namespace="/regist" extends="appsotre-json-common">
+        <action name="addDeveloper" method="addDeveloper" class="com.jd.appstore.web.action.cp.RegistAction">
+            <result type="json" name="success"/>
+        </action>
+        <action name="authAccount" method="authAccount" class="com.jd.appstore.web.action.cp.RegistAction">
+            <result type="json" name="success"/>
+        </action>
+    </package>
+</struts>

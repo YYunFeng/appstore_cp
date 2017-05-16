@@ -1,0 +1,455 @@
+<link rel="stylesheet" href="$assetModule.getTarget("/appstore-man/css/app.css")" type="text/css" media="screen"/>
+<link rel="stylesheet" href="$assetModule.getTarget("/appstore-man/css/infedit.css")" type="text/css" media="screen">
+<script type="text/javascript" src="$assetModule.getTarget("/appstore-man/js/lltiker.js")"></script>
+<script type="text/javascript">
+$().ready(function() {
+    if ('$!cpType' == 1) {
+        $('#company').addClass('hide');
+    } else {
+        $('#person').addClass('hide');
+    }
+    if ('$!msg' == 'createApp') {
+        createApk();
+    } else if ('$!msg' == 'createWeb') {
+        createWeb();
+    } else {
+        updateTree();
+    }
+
+});
+
+/**
+ * 页面初始化
+ */
+function updateTree() {
+    loadTickAlert('加载中....');
+    $('#score').val('0');
+    $('#categoryId_l2').val('');
+    $('#updateStatus').val('');
+    $('#online').val('');
+    $('#status').val('1');
+    var random = new Date().getTime();
+    jQuery.ajax({
+                type:"GET",
+                url:"/dev/checkApks.action?page=0&random=" + random,
+                dataType:"html",
+                success:function(msg) {
+                    jQuery('#main').html(msg);
+                    closeTickAlert();
+                }
+            });
+}
+
+
+/**
+ * 上传APk文件
+ */
+function createApk() {
+    loadTickAlert('加载中....');
+    jQuery.ajax({
+                type:"GET",
+                url:'$homeModule.getTarget("/dev/createApk.action")',
+                dataType:"html",
+                success:function(msg) {
+                    jQuery('#main').html(msg);
+                    closeTickAlert();
+                }
+            });
+}
+
+// 用于页面的返回
+function goBack() {
+    loadTickAlert('加载中....');
+    $('#score').val('0');
+    var categoryId_l2 = $('#categoryId_l2').val();
+    var updateStatus = $('#updateStatus').val();
+    var online = $('#online').val();
+    jQuery.ajax({
+                type:"GET",
+                url:'$homeModule.getTarget("/dev/checkApks.action")',
+                data: {"categoryId_l2":categoryId_l2,
+                    "updateStatus": updateStatus,
+                    "online":online,
+                    "random":new Date().getTime()},
+                dataType:"html",
+                success:function(msg) {
+                    jQuery('#main').html(msg);
+                    closeTickAlert();
+                }
+            });
+}
+
+function checkApk() {
+    loadTickAlert('加载中....');
+    jQuery.ajax({
+                type:"POST",
+                url:"$homeModule.getTarget("/dev/checkApkOnVerify.action")",
+                success:function(msg) {
+                    jQuery('#main').html(msg);
+                    closeTickAlert();
+                }
+            });
+}
+// 上传Web应用
+function createWeb() {
+    loadTickAlert('加载中....');
+    jQuery.ajax({
+                type:"GET",
+                url:'$homeModule.getTarget("/dev/createWeb.action")',
+                dataType:"html",
+                success:function(msg) {
+                    jQuery('#dialog').css("display", "none");
+                    jQuery('#popMask').css("display", "none");
+                    jQuery('#main').html(msg);
+                    closeTickAlert();
+                }
+            });
+}
+
+
+function checkByCategory(category_id) {
+    loadTickAlert('加载中....');
+    $('#categoryId_l2').val(category_id);
+    $('#score').val('0');
+    $('#status').val('1');
+    jQuery.ajax({
+                type:"GET",
+                url:'$homeModule.getTarget("/dev/checkApks.action").addQueryData("page",0)',
+                data:"categoryId_l2=" + category_id + "&random=" + new Date().getTime(),
+                dataType:"html",
+                success:function(msg) {
+                    jQuery('#main').html(msg);
+                    closeTickAlert();
+                }
+            });
+}
+//  按状态统计应用数量
+function state(statsId, onlineId, id,appName) {
+    $('#status').val(id);
+    var categoryId_l2 = $('#categoryId_l2').val();
+    $('#updateStatus').val(statsId);
+    $('#online').val(onlineId);
+    loadTickAlert('加载中....');
+    jQuery.ajax({
+                type:"POST",
+                url:'$homeModule.getTarget("/dev/checkApks.action").addQueryData("page",0)',
+                data:{"categoryId_l2":categoryId_l2,
+                    "updateStatus": statsId,
+                    "online":onlineId,
+                    "appName":appName,
+                    "random":new Date().getTime()},
+                dataType:"html",
+                success:function(msg) {
+                    jQuery('#main').html(msg);
+                    closeTickAlert();
+                }
+            });
+}
+// 从详情日志表中查看应用详情
+function checkApkByAppDetailsLog(updateStatus) {
+    loadTickAlert('加载中....');
+    jQuery.ajax({
+                type:'post',
+                url:'/dev/checkApkOnVerify.action',
+                data:'updateStatus=' + updateStatus,
+                dataType:'html',
+                success:function(data) {
+                    jQuery('#main').html(data);
+                    closeTickAlert();
+                }
+            });
+}
+// 从详情表中查看应用详情
+function checkApkByappId(appId, updateStatus) {
+    loadTickAlert('加载中....');
+    jQuery.ajax({
+                type:'post',
+                url:'/dev/checkApksByAppId.action',
+                data:"id=" + appId + "&updateStatus=" + updateStatus,
+                dataType:'html',
+                success:function(msg) {
+                    jQuery('#main').html(msg);
+                    /*getComment(appId);*/
+                    closeTickAlert();
+                }
+            });
+}
+// 获取评论
+function getComment(appId) {
+    $('#app_id').val(appId);
+    var score = $('#score').val();
+    jQuery.ajax({
+                type:'post',
+                url:'$homeModule.getTarget("/dev/comment.action").addQueryData("page",0)',
+                data:"getComment.appId=" + appId + "&getComment.score=" + score,
+                dataType:'html',
+                success:function(msg) {
+                    jQuery('#comcontent').html(msg);
+                    $('#' + $('#score').val()).addClass("curr");
+                }
+            });
+}
+function isModifyApk(appId, updateStatus) {
+    jQuery.ajax({
+                type:'post',
+                url:'/dev/ismodify.action',
+                data:"id=" + appId + "&updateStatus=" + updateStatus,
+                dataType:'json',
+                success:function(data) {
+                    if (data) {
+                        alert('您已经修改了该应用,请等待审核!');
+                    } else {
+                        modifyApk(appId, updateStatus)
+                    }
+                }
+            });
+
+}
+function isModifyWeb(appId, updateStatus) {
+    jQuery.ajax({
+                type:'post',
+                url:'/dev/ismodify.action',
+                data:"id=" + appId + "&updateStatus=" + updateStatus,
+                dataType:'json',
+                success:function(data) {
+                    if (data) {
+                        alert('您已经修改了该应用,请等待审核!');
+                    } else {
+                        modifyWeb(appId, updateStatus)
+                    }
+                }
+            });
+
+}
+// 修改APK文件
+function modifyApk(appId, updateStatus) {
+    loadTickAlert('加载中....');
+    jQuery.ajax({
+                type:'post',
+                url:'/dev/modifyApk.action',
+                data:"id=" + appId + "&updateStatus=" + updateStatus,
+                dataType:'html',
+                success:function(msg) {
+                    jQuery('#main').html(msg);
+                    closeTickAlert();
+                }
+            });
+}
+// 用户信息
+function personMess() {
+    loadTickAlert('加载中....');
+    jQuery.ajax({
+                type:'post',
+                url:'/dev/personMess.action',
+                dataType:'html',
+                success:function(msg) {
+                    jQuery('#main').html(msg);
+                    closeTickAlert();
+                }
+            });
+}
+
+function modifyCpMess() {
+    loadTickAlert('加载中....');
+    jQuery.ajax({
+                type:'post',
+                url:'/dev/modifyCpMess.action',
+                dataType:'html',
+                success:function(msg) {
+                    jQuery('#main').html(msg);
+                    closeTickAlert();
+                }
+            });
+}
+function modifyCompanyMess() {
+    loadTickAlert('加载中....');
+    jQuery.ajax({
+                type:'post',
+                url:'/dev/modifyCompanyMess.action',
+                dataType:'html',
+                success:function(msg) {
+                    jQuery('#main').html(msg);
+                    closeTickAlert();
+                }
+            });
+}
+
+
+// 查看付费合同信息
+function payAppInfo() {
+    loadTickAlert('加载中....');
+    jQuery.ajax({
+                type:'post',
+                url:'/dev/payAppInfo.action',
+                dataType:'html',
+                success:function(msg) {
+                    jQuery('#main').html(msg);
+                    closeTickAlert();
+                }
+            });
+}
+// 修改密码
+function changePassword() {
+    loadTickAlert('加载中....');
+    jQuery.ajax({
+                type:'post',
+                url:'/dev/changePassword.action',
+                dataType:'html',
+                success:function(msg) {
+                    jQuery('#main').html(msg);
+                    closeTickAlert();
+                }
+            });
+}
+
+
+// 绑定手机
+function bindMobile() {
+    loadTickAlert('加载中....');
+    jQuery.ajax({
+                type:'post',
+                url:'/dev/bindMobile.action',
+                dataType:'html',
+                success:function(msg) {
+                    jQuery('#main').html(msg);
+                    closeTickAlert();
+                }
+            });
+}
+//   修改web应用
+function modifyWeb(appId, updateStatus) {
+    loadTickAlert('加载中....');
+    jQuery.ajax({
+                type:'post',
+                url:'/dev/modifyWeb.action',
+                data:"id=" + appId + "&updateStatus=" + updateStatus,
+                dataType:'html',
+                success:function(msg) {
+                    jQuery('#main').html(msg);
+                    closeTickAlert();
+                }
+            });
+}
+function companyMess() {
+    jQuery.ajax({
+                type:'post',
+                url:'/dev/companyMess.action',
+                dataType:'html',
+                success:function(msg) {
+                    jQuery('#main').html(msg);
+                }
+            });
+}
+</script>
+<div class="w_2">
+    <div id="app">
+        <div class="warp">
+            <div class="left fl rounded">
+                <!-- 收缩展开菜单 -->
+              <div id="menu-box">
+                    <script type="text/javascript" src=$assetModule.getTarget("/appstore-man/js/menu.js")></script>
+                    <div class="box">
+                        <h1>
+                            <div class="title_1"><span class="menu1"></span></div>
+                        </h1>
+                        <ul class="list">
+                            <li>
+                                <div class="ico_1 fl"></div>
+                                <a id="menu_1" style="cursor:pointer" onclick="updateTree()" class="active">全部应用</a>
+                            </li>
+                            <li>
+                                <div class="ico_2 fl"></div>
+                                <a id="menu_2" style="cursor:pointer"
+                                   onclick="checkByCategory($categoryUtils.getGameCategoryId());">移动游戏</a>
+                            </li>
+                            <li>
+                                <div class="ico_3 fl"></div>
+                                <a id="menu_3" style="cursor:pointer"
+                                   onclick="checkByCategory($categoryUtils.getSoftCategoryId());">移动软件</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="box">
+                        <h2>
+                            <div class="title_2"><span class="menu1"></span></div>
+                        </h2>
+                        <ul class="list">
+                            <li id="person">
+                                <div class="ico_5 fl"></div>
+                                <a id="menu_5" onclick="personMess();" style="cursor:pointer">个人信息</a>
+                            </li>
+                            <li id="company">
+                                <div class="ico_6 fl"></div>
+                                <a id="menu_6" onclick="companyMess()" style="cursor:pointer">公司信息</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="box">
+                        <h3>
+                            <div class="title_3"><span class="menu1"></span></div>
+                        </h3>
+                        <ul class="list">
+                            <li>
+                                <div class="ico_8 fl"></div>
+                                <a id="menu_8" style="cursor:pointer" onclick="changePassword();">修改密码</a>
+                            </li>
+                        </ul>
+                    </div>
+               </div>
+            </div>
+            <!--right_start-->
+            <div class="fr" id="main">
+            </div>
+            <!--right_end-->
+        </div>
+    </div>
+</div>
+<!--加载中。。。-->
+<div id="load" class="hide">
+    <table id="mask" class="loading">
+        <tr>
+            <td style="height:100%;" align="center">
+                <div id="box" style="width: 160px;height: 32px;z-index:9999999;">
+                    <div id="ticker" style="float:left;width: 32px;height: 32px;margin: auto;align:center;">
+                        <img width="32" border="0" height="32"
+                             src="/appstore-man/images/loadingb.gif"></div>
+                    <div id="inputBox" style="float:left;width: auto;height: auto;font-weight: bold;font-size: 18px;line-height:32px;padding-left:12px;color: rgb(0, 159, 229);">
+                        加载中....
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#menu-box a").click(function() {
+            $("#menu-box a").removeClass();
+            var pid = $(this).attr("id");
+            if (pid) {
+                var object = document.getElementById(pid);
+                if (object)object.className += "active";
+            }
+        });
+        (function() {
+            var object = document.getElementById("nav-app");
+            if (object)object.className += " curr";//当前导航
+        })();
+    });
+    function bindMobile() {
+        window.open('http://safe.360buy.com/validate/verifyMobile');
+    }
+    function bindEmail() {
+        window.open('http://safe.360buy.com/validate/verifyMail');
+    }
+</script>
+#*将条件保存，用于分页*#
+<input type="hidden" id="categoryId_l2" value="$!categoryId_l2"/>
+<input type="hidden" id="updateStatus" value=""/>
+<input type="hidden" id="online" value=""/>
+<input type="hidden" id="cpType" value=""/>
+<input type="hidden" id="app_id" value=""/>
+<input type="hidden" id="score" value="0"/>
+#* 判断查询的状态*#
+<input type="hidden" id="status" value="1"/>
+

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="Address">
+    <typeAlias alias="province" type="com.jd.appstore.domain.web.Province"/>
+    <typeAlias alias="provinceCity" type="com.jd.appstore.domain.web.ProvinceCity"/>
+    <typeAlias alias="cityDistrict" type="com.jd.appstore.domain.web.CityDistrict"/>
+    <select id="getProprovince" resultClass="province">
+        SELECT
+           id AS provinceId,
+           province as province
+        from
+           tb_province
+    </select>
+    <select id="getProvinceCity" resultClass="provinceCity" parameterClass="int">
+        SELECT
+           id AS provinceCityId,
+           city AS provinceCity
+        FROM
+           tb_province_city
+        WHERE
+          province_id = #id#
+    </select>
+    <select id="getCityDistrict" resultClass="cityDistrict" parameterClass="int">
+        SELECT
+           id as cityDistrictId,
+           district as cityDistrict
+        FROM
+           tb_city_district
+        WHERE
+           city_id = #id#
+    </select>
+</sqlMap>

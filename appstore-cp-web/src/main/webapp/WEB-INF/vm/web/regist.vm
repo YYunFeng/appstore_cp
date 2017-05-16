@@ -1,0 +1,525 @@
+<link rel="stylesheet" href="$assetModule.getTarget("/appstore-man/css/regist.css")" type="text/css"/>
+<script type="text/javascript" src="$assetModule.getTarget("/appstore-man/js/jquery-1.7.1.js")"></script>
+<script type="text/javascript" src="$assetModule.getTarget("/appstore-man/js/tab.js")"></script>
+<script type="text/javascript" src="$assetModule.getTarget("/appstore-man/js/formValidator-4.1.1.min.js")"></script>
+<script type="text/javascript" src="$assetModule.getTarget("/appstore-man/js/formValidatorRegex.js")"></script>
+<script>
+$(document).ready(function () {
+    jQuery.formValidator.initConfig({validatorGroup:"1",theme:"Default",submitOnce:true,formID:"developerperson",mode:"FixTip",onError: function (msg) {
+                alert(msg);
+            }, onSuccess: function () {
+                return true;
+            },
+                submitAfterAjaxPrompt : '有数据正在异步验证，请稍等...'
+            });
+    jQuery.formValidator.initConfig({validatorGroup:"2",theme:"Default",submitOnce:true,formID:"developercompany",mode:"FixTip",onError: function (msg) {
+                alert(msg);
+            }, onSuccess: function () {
+                return true;
+            },
+                submitAfterAjaxPrompt : '有数据正在异步验证，请稍等...'
+            });
+
+    // 个人用户注册
+    jQuery("#account").formValidator({
+                validatorGroup:"1",
+                onShow:"请填写用户名，该内容将作为登录信息"
+            }).inputValidator({
+                min: 3,
+                onError: "由3~15个中英文、数字或者“_”组成"
+            }).functionValidator({
+                fun: function (val, elem) {
+                    if (!IsDevAuthor(val, 3, 30)) {
+                        return "由3~15个中英文、数字或者“_”组成";
+                    }
+                    return true;
+                }
+            }).ajaxValidator({
+                type: "post",
+                async : true,
+                url: "/regist/authAccount.action",
+                datatype: "text",
+                success: function (data) {
+                    if (data == 0)
+                        return true;
+                    else if (data == 1)
+                        return false;
+                },
+                error: function () {
+                    AlertTips("服务器忙，请重试");
+                },
+                onError: "该名称已被注册",
+                onWait: "正在合法性校验，请稍候..."
+            });
+    jQuery("#password").formValidator({
+                validatorGroup:"1",
+                onShow:"6~16个字符，包括字母、数字、特殊符号，区分大小写"
+            }).inputValidator({
+                min:6,
+                max:16,
+                onError:"密码长度错误,请确认!"
+            }).passwordValidator({
+                onErrorCompareSame:"",
+                ContinueChar:false,
+                SameChar:false,
+                compareID:"confPassword"
+            });
+    jQuery("#confPassword").formValidator({
+                validatorGroup:"1",
+                onShow:"再次输入密码",
+                onFocus:"至少1个长度",
+                onCorrect:"密码一致"
+            }).inputValidator({
+                min:1,
+                empty:{
+                    leftEmpty:false,
+                    rightEmpty:false,
+                    emptyError:"重复密码两边不能有空符号"},
+                onError:"重复密码不能为空,请确认"
+            }).compareValidator({
+                desID:"password",
+                operateor:"=",
+                onError:"2次密码不一致,请确认"
+            });
+    jQuery("#cpName").formValidator({
+                validatorGroup:"1",
+                onShow:"2-20位中文、英文、-、_和.任意组合"
+            }).inputValidator({
+                min: 1,
+                onError: "真实姓名/联系人不能为空"
+            });
+   
+    jQuery("#mobile").formValidator({
+                validatorGroup:"1",
+                onShow:"请输入有效手机号,凭此收到更新通知",
+                onFocus: "请输入您的联系电话"
+            }).inputValidator({
+                min: 1,
+                onError: "联系电话不能为空"
+            }).regexValidator({
+                regExp: "mobile",
+                dataType: "enum",
+                onError: "格式不正确"
+            });
+    jQuery("#certificateType").formValidator({
+                validatorGroup:"1",
+                onShow:"请选择证件类型",
+                onFocus:"必须选择类型",
+                onCorrect:"选择成功",
+                defaultValue:""
+            }).inputValidator({
+                min:1,
+                onError: "请选择证件类型"
+            }).defaultPassed();
+
+    jQuery("#certificateNo").formValidator({
+                validatorGroup:"1",
+                onShow:"国外开发者请选择护照",
+                onFocus: "请填写证件编号"
+            }).inputValidator({
+                min: 1,
+                onError: "证件编号不能为空"
+            }).functionValidator({
+                fun: function (val, elem) {
+                    if (!IsPassport(val))
+                        return "由数字及最后一位为“x”组成";
+                    return true;
+                }
+            });
+    jQuery('#entcondcode1').formValidator({
+                validatorGroup:"1",
+                onShow:"请输入验证码",
+                onFocus: "验证码不能为空",
+                onCorrect:""
+            }).inputValidator({
+                min:1,
+                onError: "验证码不能为空"
+            });
+
+    //  公司注册
+    jQuery("#entDeveloperName").formValidator({
+                validatorGroup:"2",
+                onShow:"请填写用户名，该内容将作为登录信息"
+            }).inputValidator({
+                min: 3,
+                onError: "由3~15个中英文、数字或者“_”组成"
+            }).functionValidator({
+                fun: function (val, elem) {
+                    if (!IsDevAuthor(val, 3, 30))
+                        return "由3~15个中英文、数字或者“_”组成";
+                    return true;
+                }
+            }).ajaxValidator({
+                type: "post",
+                async : true,
+                url: "/regist/authAccount.action",
+                datatype: "text",
+                success: function (data) {
+                    if (data == 0)
+                        return true;
+                    else if (data == 1)
+                        return false;
+                },
+                error: function () {
+                    AlertTips("服务器忙，请重试");
+                },
+                onError: "该名称已被注册",
+                onWait: "正在合法性校验，请稍候..."
+            });
+    jQuery("#entPassword").formValidator({
+                validatorGroup:"2",
+                onShow:"6~16个字符，包括字母、数字、特殊符号，区分大小写"
+            }).inputValidator({
+                min:6,
+                max:16,
+                onError:"密码长度错误,请确认!"
+            }).passwordValidator({
+                onErrorCompareSame:"",
+                ContinueChar:false,
+                SameChar:false,
+                compareID:"confPassword"
+            });
+    jQuery("#entConfPassword").formValidator({
+                validatorGroup:"2",
+                onShow:"再次输入密码",
+                onFocus:"6~16个字符，包括字母、数字、特殊符号，区分大小写",
+                onCorrect:"密码一致"
+            }).inputValidator({
+                min:1,
+                empty:{
+                    leftEmpty:false,
+                    rightEmpty:false,
+                    emptyError:"重复密码两边不能有空符号"
+                },
+                onError:"重复密码不能为空,请确认"
+            }).compareValidator({
+                desID:"entPassword",
+                operateor:"=",
+                onError:"2次密码不一致,请确认"
+            });
+    jQuery("#entName").formValidator({
+                validatorGroup:2,
+                onShow:"2-20位中文、英文、-、_和.任意组合"
+            }).inputValidator({
+                min: 1,
+                onError: "请填写公司名称"
+            });
+    jQuery("#entphoneNumber").formValidator({
+                validatorGroup:"2",
+                onShow:"请输入有效手机号,凭此收到更新通知",
+                onFocus: "请输入您的联系电话"
+            }).inputValidator({
+                min: 1,
+                onError: "联系电话不能为空"
+            }).regexValidator({
+                regExp: "mobile",
+                dataType: "enum",
+                onError: "格式不正确"
+            });
+     jQuery("#certificateNoCom").formValidator({
+                validatorGroup:"1",
+                onShow:"填写公司营业执照编号",
+                onFocus: "请填写营业执照编号"
+            }).inputValidator({
+                min: 1,
+                onError: "证件编号不能为空"
+            });
+    jQuery('#entconcode').formValidator({
+                validatorGroup:"2",
+                onShow:"请输入验证码",
+                onFocus: "验证码不能为空",
+                onCorrect:""
+            }).inputValidator({
+                min:1,
+                onError: "验证码不能为空"
+            });
+
+});
+var chkinfo = "person";
+function hover(obj, tabBox, cotBox, info) {
+    chkinfo = info;
+    hoverLi(obj, tabBox, cotBox);
+}
+
+function subForm(uid) {
+    if (chkinfo == "person") {
+        validatePerReg(uid);
+    }
+    else {
+        validateEntReg(uid);
+    }
+}
+function validatePerReg(uid) {
+    var account = $('#account');
+    var password = $('#password');
+    var confPassword = $('#confPassword');
+    var cpName = $('#cpName');
+    var mobile = $('#mobile');
+    var certificateType = $('#certificateType');
+    var certificateNo = $('#certificateNo');
+    var authCode = $('#entcondcode1').val();
+    if (jQuery.formValidator.pageIsValid('1')) {
+        jQuery.ajax({
+                    type:"post",
+                    url:'/regist/addDeveloper.action',
+                    data:{
+                        "cpBaseinfo.account":account.val(),
+                        "cpBaseinfo.password":password.val(),
+                        "cpBaseinfo.cpProperty":"1",
+                        "cpBaseinfo.feeStatus":"1",
+                        "cpBaseinfo.cpName":cpName.val(),
+                        "cpReginfo.mobile":mobile.val(),
+                        "cpReginfo.certificateType":certificateType.val(),
+                        "cpReginfo.certificateNo":certificateNo.val(),
+                        "authCode":authCode,
+                        "uid":uid
+                    },
+                    dataType:'json',
+                    success:function(data) {
+                        if (data == 0) {
+                            alert('验证码输入错误!');
+                            changeImgage('authcode1');
+                        }
+                        if (data == 1) {
+                            window.location = "$assetModule.getTarget("/regist/regSuccess.action")";
+                        }
+                        if (data == 2) {
+                            alert('系统错误，请重试！');
+                            changeImgage('authcode1');
+                        }
+                    }
+                });
+    }
+}
+function validateEntReg(uid) {
+    var entDeveloperName = document.getElementById("entDeveloperName");
+    var entPassword = document.getElementById("entPassword");
+    var entconfPassword = document.getElementById("entConfPassword");
+    var entName = document.getElementById("entName");
+    var entphoneNumber = document.getElementById("entphoneNumber");
+    var certificateNo = $('#certificateNoCom');
+    var authCode = $('#entconcode').val();
+    if (jQuery.formValidator.pageIsValid('2')) {
+        jQuery.ajax({
+                    type:"post",
+                    url:'/regist/addDeveloper.action',
+                    data:{
+                        "cpBaseinfo.account":entDeveloperName.value,
+                        "cpBaseinfo.password":entPassword.value,
+                        "cpBaseinfo.cpProperty":"2",
+                        "cpBaseinfo.feeStatus":"1",
+                        "cpBaseinfo.cpName":entName.value,
+                         "cpReginfo.certificateType":2,
+                        "cpReginfo.certificateNo":certificateNo.val(),
+                        "cpReginfo.mobile":entphoneNumber.value,
+                        "authCode":authCode,
+                        "uid":uid
+                    },
+                    dataType:'json',
+                    success:function(data) {
+                        if (data == 0) {
+                            alert('验证码输入错误!');
+                            changeImgage('authcode');
+                        }
+                        if (data == 1) {
+                            window.location = "$assetModule.getTarget("/regist/regSuccess.action")";
+                        }
+                        if (data == 2) {
+                            alert('系统错误，请重试！');
+                            changeImgage('authcode1');
+                        }
+                    }
+                });
+    }
+}
+function changeImgage(id) {
+    $('#' + id).attr('src', '/authcode/getAuthCode.action?uid=$!uid&time=' + new Date().getTime());
+}
+</script>
+<div class="w">
+    <div id="register">
+        <div class="warp">
+            <h2>新用户注册</h2>
+            <p class="topmessage">您必须认真填写以下基本资料，才能成为开发者。</p>
+            <div class="main">
+                <h3>填写基本信息</h3>
+
+                <div id="tabBox" class="tabBox">
+                    <ul>
+                        <li id="tab_1" class="focus" onclick="hover(this,'tabBox','cotBox','person');">个人</li>
+                        <li id="tab_2" class="blur" onclick="hover(this,'tabBox','cotBox','enter');">企业</li>
+                    </ul>
+                </div>
+                <div class="cotBox">
+                    <form name="developerperson" method="post" action="addDeveloperPerson.action"
+                          id="addPerDcDeveloperForm">
+                        <input name="regtype" value="1" type="hidden">
+
+                        <div id="cotBox_1" class="show">
+                            <div class="lsBd2">
+                                <label class="bt"><em class="red">*</em>用户名：</label>
+                                <label class="nr">
+                                    <input id="account" name="account" class="ipt1" maxlength="15"
+                                           type="text" class="required">
+                                </label>
+                                <label class="ts" id="accountTip"></label>
+                            </div>
+                            <div class="lsBd2">
+                                <label class="bt"><em class="red">*</em>密码：</label>
+                                <label class="nr">
+                                    <input id="password" name="password" class="ipt1" maxlength="16"
+                                           type="password">
+                                </label>
+                                <label class="ts" id="passwordTip"></label>
+                            </div>
+
+                            <div class="lsBd2">
+                                <label class="bt"><em class="red">*</em>重复密码：</label>
+                                <label class="nr">
+                                    <input id="confPassword" name="confPassword" class="ipt1" maxlength="16"
+                                           type="password">
+                                </label>
+                                <label class="ts" id="confPasswordTip">请再次输入</label>
+                            </div>
+
+                            <div class="lsBd2">
+                                <label class="bt"><em class="red">*</em>开发者姓名：</label>
+                                <label class="nr">
+                                    <input id="cpName" name="cpName" class="ipt1" maxlength="20"
+                                           type="text">
+                                </label>
+                                <label class="ts" id="cpNameTip"></label>
+                            </div>
+
+
+                            <div class="lsBd2">
+                                <label class="bt"><em class="red">*</em>手机号码：</label>
+                                <label class="nr">
+                                    <input id="mobile" name="mobile" class="ipt1" maxlength="20"
+                                           type="text">
+                                </label>
+                                <label class="ts" id="mobileTip"></label>
+                            </div>
+
+                            <div class="lsBd2">
+                                <label class="bt"><em class="red">*</em>证件类型：</label>
+                                <label class="nr">
+                                    <select id="certificateType" name="certificateType" class="slt1">
+                                        <option selected value="">请选择证件类型</option>
+                                        <option value="0">身份证号</option>
+                                        <option value="1">护照</option>
+                                    </select>
+                                </label>
+                                <label class="ts" id="certificateTypeTip"></label>
+                            </div>
+
+                            <div class="lsBd2">
+                                <label class="bt"><em class="red">*</em>证件号：</label>
+                                <label class="nr">
+                                    <input id="certificateNo" name="certificateNo" class="ipt1" maxlength="20"
+                                           type="text">
+                                </label>
+                                <label class="ts" id="certificateNoTip"></label>
+                            </div>
+
+                            <div class="lsBd2">
+                                <label class="bt"><em class="red">*</em>验证码：</label>
+                                <label class="nr">
+                                    <input id="entcondcode1" name="entconcode" class="ipt3" maxlength="4" type="text">
+                                    <img id="authcode1" style="cursor:pointer"
+                                         src="/authcode/getAuthCode.action?uid=$!uid"
+                                         onclick="this.src='/authcode/getAuthCode.action?uid=$!uid&time='+new Date().getTime()"
+                                         id="entimgs1" align="absmiddle" class="codeimg">&nbsp;<a
+                                        class="lightblue ns" href="javascript:changeImgage('authcode1');">看不清楚</a>
+                                </label>
+                                <label class="ts" id="entcondcode1Tip"></label>
+                            </div>
+                        </div>
+                    </form>
+
+                    <form name="developercompany" method="post" action=""
+                          id="addEntDcDeveloperForm">
+                        <input name="regtype" value="2" type="hidden">
+
+                        <div id="cotBox_2" class="none">
+                            <div class="lsBd2">
+                                <label class="bt"><em class="red">*</em>用户名：</label>
+                                <label class="nr">
+                                    <input name="account" id="entDeveloperName" class="ipt1" maxlength="15"
+                                           type="text">
+                                </label>
+                                <label class="ts" id="entDeveloperNameTip"></label>
+                            </div>
+
+                            <div class="lsBd2">
+                                <label class="bt"><em class="red">*</em>密码：</label>
+                                <label class="nr">
+                                    <input name="entPassword" id="entPassword" class="ipt1" maxlength="16"
+                                           type="password">
+                                </label>
+                                <label class="ts" id="entPasswordTip"></label>
+                            </div>
+
+                            <div class="lsBd2">
+                                <label class="bt"><em class="red">*</em>重复密码：</label>
+                                <label class="nr">
+                                    <input name="entConfPassword" id="entConfPassword" class="ipt1" maxlength="16"
+                                           type="password">
+                                </label>
+                                <label class="ts" id="entConfPasswordTip"></label>
+                            </div>
+
+                            <div class="lsBd2">
+                                <label class="bt"><em class="red">*</em>企业名称：</label>
+                                <label class="nr">
+                                    <input name="entName" id="entName" class="ipt1" maxlength="60" type="text">
+                                </label>
+                                <label class="ts" id="entNameTip"></label>
+                            </div>
+                            
+                            <div class="lsBd2">
+                                <label class="bt"><em class="red">*</em>营业执照编号：</label>
+                                <label class="nr">
+                                    <input id="certificateNoCom" name="certificateNo" class="ipt1" maxlength="20"
+                                           type="text">
+                                </label>
+                                <label class="ts" id="certificateNoComTip"></label>
+                            </div>
+                            
+                            <div class="lsBd2">
+                                <label class="bt"><em class="red">*</em>手机号码：</label>
+                                <label class="nr">
+                                    <input id="entphoneNumber" name="entphoneNumber" class="ipt1" maxlength="20"
+                                           type="text">
+                                </label>
+                                <label class="ts" id="entphoneNumberTip"></label>
+                            </div>
+
+                            <div class="lsBd2">
+                                <label class="bt"><em class="red">*</em>验证码：</label>
+                                <label class="nr">
+                                    <input id="entconcode" name="entconcode" class="ipt3" maxlength="4" type="text">
+                                    <img id="authcode" style="cursor:pointer"
+                                         src="/authcode/getAuthCode.action?uid=$!uid"
+                                         onclick="this.src='/authcode/getAuthCode.action?uid=$!uid&time='+new Date().getTime()"
+                                         id="entimgs" align="absmiddle" class="codeimg">&nbsp;<a
+                                        class="lightblue ns" href="javascript:changeImgage('authcode');">看不清楚</a>
+                                </label>
+                                <label class="ts" id="entconcodeTip"></label>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="fun rounded">
+                    <input id="entSub" onclick="subForm('$uid');" value="" type="image"
+                           src="/appstore-man/images/agree.png">
+                </div>
+                <div class="xieyi">
+                    <p><br>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

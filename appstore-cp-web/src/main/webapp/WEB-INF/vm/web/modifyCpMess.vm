@@ -1,0 +1,307 @@
+#set($layout="ajax.vm")
+<script type="text/javascript" src="$assetModule.getTarget("/appstore-man/js/jquery-1.4.2.min.js")"></script>
+<script type="text/javascript" src="$assetModule.getTarget("/appstore-man/js/formValidator-4.1.1.min.js")"></script>
+<script type="text/javascript" src="$assetModule.getTarget("/appstore-man/js/formValidatorRegex.js")"></script>
+<script type="text/javascript" language="javascript">
+
+function changeImgage() {
+    $('#authcode').attr('src', '/authcode/getAuthCode.action?uid=$!uid&time=' + new Date().getTime());
+}
+function getProvinceCity(val) {
+    jQuery.ajax({
+                type:'post',
+                url:"/dev/getProvinceCity.action",
+                data:"id=" + val,
+                dataType:"json",
+                success:function(data) {
+                    var selectProvinceCity = document.getElementById("provinceCity");
+                    selectProvinceCity.length = 0;
+                    var def1 = new Option("请选择", "");
+                    selectProvinceCity.options.add(def1);
+
+                    var selectCity = document.getElementById("city");
+                    selectCity.length = 0;
+                    var def2 = new Option("请选择", "");
+                    selectCity.options.add(def2);
+                    for (var i = 0; i < data.map.provinceCity.length; i++) {
+                        var cate = new Option(data.map.provinceCity[i].provinceCity, data.map.provinceCity[i].provinceCityId + "");
+                        selectProvinceCity.options.add(cate);
+                    }
+                }
+            });
+
+}
+function getCity(val) {
+    jQuery.ajax({
+                type:'post',
+                url:"/dev/getCityDistrict.action",
+                data:"id=" + val,
+                dataType:"json",
+                success:function(data) {
+                    var selectCity = document.getElementById("city");
+                    selectCity.length = 0;
+                    var def = new Option("请选择", "");
+                    selectCity.add(def);
+                    for (var i = 0; i < data.map.city.length; i++) {
+                        var cate = new Option(data.map.city[i].cityDistrict, data.map.city[i].cityDistrictId + "");
+                        selectCity.add(cate);
+                    }
+                }
+            });
+}
+$(document).ready(function () {
+    jQuery.formValidator.initConfig({validatorGroup:"1",theme:"Default",submitOnce:false,formID:"developerperson",mode:"FixTip",onError: function (msg) {
+
+            }, onSuccess: function () {
+                return true;
+            },
+                submitAfterAjaxPrompt : '有数据正在异步验证，请稍等...'
+            });
+
+    jQuery("#cpName").formValidator({
+                validatorGroup:"1",
+                onShow:"",
+                onCorrect:"",
+                onFocus:""
+            }).inputValidator({
+                min: 1,
+                onError: "真实姓名/联系人不能为空"
+            });
+   
+    jQuery("#certificateType").formValidator({
+                validatorGroup:"1",
+                onShow:"",
+                onFocus:"",
+                onCorrect:"",
+                defaultValue:""
+            }).inputValidator({
+                min:1,
+                onError: "请选择证件类型"
+            }).defaultPassed();
+
+    jQuery("#certificateNo").formValidator({
+                validatorGroup:"1",
+                onShow:"",
+                onFocus:"",
+                onCorrect:""
+            }).inputValidator({
+                min: 1,
+                onError: "证件编号不能为空"
+            }).functionValidator({
+                fun: function (val, elem) {
+                    var vali = $('#vali').val();
+                    if (vali == 0) {
+                        if (validateIdCard(val) == 0) {
+                            return true;
+                        }
+                        if (validateIdCard(val) == 1) {
+                            return "非法身份证号";
+                        }
+                        if (validateIdCard(val) == 2) {
+                            return "非法地区";
+                        }
+                        if (validateIdCard(val) == 3) {
+                            return "非法生日";
+                        }
+                    } else {
+                        return true;
+                    }
+                }
+            });
+});
+
+// 更新CP个人信息
+function updateCpMess(uid) {
+    var account = $('#account').val();
+    var cpName = $('#cpName').val();
+    var email = $('#email').val();
+    var mobile = $('#mobile').val();
+    var certificateType = $('#certificateType').val();
+    var certificateNo = $('#certificateNo').val();
+    var otherContact = $('#otherContact ').val();
+    var webadd = $('#webadd').val();
+    var county = $('#county').val();
+    var address = $('#address').val();
+    var province_id = $('#province').val();
+    var city_id = $('#provinceCity').val();
+    var district_id = $('#city').val();
+    var fax = $('#fax').val();
+    var selectObj = document.getElementById('province');
+    var province = selectObj.options[selectObj.selectedIndex].text;
+    var city = document.getElementById('provinceCity').options[document.getElementById('provinceCity').selectedIndex].text;
+    var district = document.getElementById('city').options[document.getElementById('city').selectedIndex].text;
+    var authcode = $('#entconcode').val();
+    if (province_id == '') {
+        province = '';
+    }
+    if (city_id == '') {
+        city = '';
+    }
+    if (district_id == '') {
+        district = '';
+    }
+    if (jQuery.formValidator.pageIsValid('1')) {
+        jQuery.ajax({
+                    type:"post",
+                    url:'dev/updateCpMess.action',
+                    data:{"cpBaseinfo.account":account,
+                        "cpBaseinfo.cpName":cpName,
+                        "cpReginfo.certificateType":certificateType,
+                        "cpReginfo.certificateNo":certificateNo,
+                        "cpReginfo.otherContact":otherContact,
+                        "cpReginfo.webadd":webadd,
+                        "cpReginfo.address":address,
+                        "cpReginfo.provinceId":province_id,
+                        "cpReginfo.cityId":city_id,
+                        "cpReginfo.districtId":district_id,
+                        "cpReginfo.province":province,
+                        "cpReginfo.city":city,
+                        "cpReginfo.district":district,
+                        "cpReginfo.fax":fax,
+                        "authcode":authcode,
+                        "uid":uid
+                    },
+                    dataType:'json',
+                    success:function(data) {
+                        if (data == 1) {
+                            alert('修改成功!');
+                            personMess();
+                        } else {
+                            alert('验证码不正确!');
+                            $('#entconcode').val('');
+                            changeImgage();
+                        }
+                    }
+                });
+    }
+}
+function changeVali(val) {
+    $('#vali').val(val);
+}
+
+</script>
+<div class="right  rounded">
+    <div class="top radius overflow">个人信息</div>
+    <div class="cotBox">
+        <form name="" method="post" action="" onsubmit="">
+            <div class="lsBd2">
+                <label class="bt"><em class="red">*</em>用 户 名：</label>
+                <label class="nr">
+                    $!stringEscapeUtils.escapeHtml($!personMess.account)
+                    <input id="account" name="account" value="$!stringEscapeUtils.escapeHtml($!personMess.account)" class="hide" maxlength="25"
+                           type="text">
+                </label>
+            </div>
+            <div class="lsBd2">
+                <label class="bt"><em class="red">*</em>开发者姓名：</label>
+                <label class="nr">
+                    <input id="cpName" name="cpName" value="$!stringEscapeUtils.escapeHtml($!personMess.cpName)" class="ipt2" maxlength="25"
+                           type="text">
+                </label>
+                <label class="ts" id="cpNameTip"></label>
+            </div>
+           
+            <div class="lsBd2">
+                <label class="bt"><em class="red">*</em>证件类型：</label>
+                <label class="nr">
+                    <select id="certificateType" name="documentType" class="slt slt1"
+                            onchange="changeVali(this.value);">
+                        <option selected value="">请选择证件类型</option>
+                        <option value="0"
+                            #if($!personMess.certificateType==0) selected="selected" #end>身份证号
+                        </option>
+                        <option value="1"
+                            #if($!personMess.certificateType==1) selected="selected" #end>护照
+                        </option>
+                    </select>
+                </label>
+                <label class="ts" id="certificateTypeTip"></label>
+            </div>
+            <div class="lsBd2">
+                <label class="bt"><em class="red">*</em>证 件 号：</label>
+                <label class="nr">
+                    <input value="$!stringEscapeUtils.escapeHtml($!personMess.certificateNo)" class="ipt2" maxlength="25" id="certificateNo"
+                           type="text">
+                </label>
+                <label class="ts" id="certificateNoTip"></label>
+            </div>
+            <div class="lsBd2">
+                <label class="bt">其他联系方式：</label>
+                <label class="nr">
+                    <input id="otherContact" value="$!stringEscapeUtils.escapeHtml($!personMess.otherContact)" class="ipt2" maxlength="80" type="text">
+                </label>
+                <label class="ts"></label>
+            </div>
+            <div class="lsBd2">
+                <label class="bt">网站：</label>
+                <label class="nr">
+                    <input id="webadd" value="$!stringEscapeUtils.escapeHtml($!personMess.webadd)" class="ipt2" maxlength="125" type="text">
+                </label>
+                <label class="ts"></label>
+            </div>
+            <div class="lsBd1">
+                <label class="bt">所在地：</label>
+               <span class="nr">
+                <div id="area">
+                    <select id="province" onchange="getProvinceCity(this.value);">
+                        <option value="">请选择</option>
+                        #foreach($!province in $!addressMess)
+                            <option
+                                #if($!personMess.provinceId == $!province.provinceId)
+                                        selected="selected"
+                                #end
+                                        value="$!province.provinceId">$!province.province
+                            </option>
+                        #end
+                    </select>
+                    <select id="provinceCity" onchange="getCity(this.value)">
+                        #if($!personMess.cityId)
+                            <option value="$!personMess.cityId">$!personMess.city </option>
+                        #else
+                            <option value="">请选择</option>
+                        #end
+                    </select>
+                    <select id="city">
+                        #if($!personMess.districtId)
+                            <option value="$!personMess.districtId">$!personMess.district</option>
+                        #else
+                            <option value="">请选择</option>
+                        #end
+                    </select>
+                </div>
+                   </span>
+            </div>
+
+            <div class="lsBd2">
+                <label class="bt">详细信息地址： </label>
+                <label class="nr">
+                    <input id="address" name="" value="$!stringEscapeUtils.escapeHtml($!personMess.address)" class="ipt2" maxlength="125" type="text">
+                </label>
+                <label class="ts"></label>
+            </div>
+
+            <div class="lsBd2">
+                <label class="bt">传 &nbsp;&nbsp; 真：</label>
+                <label class="nr">
+                    <input id="fax" value="$!stringEscapeUtils.escapeHtml($!personMess.fax)" class="ipt2" maxlength="25" type="text">
+                </label>
+                <label class="ts"></label>
+            </div>
+            <div class="lsBd2">
+                <label class="bt"><em class="red">*</em>验证码：</label>
+                <label class="nr">
+                    <input id="entconcode" name="entconcode" class="ipt3" maxlength="4" type="text">
+                    <img id="authcode" style="cursor:pointer" src="/authcode/getAuthCode.action?uid=$!uid"
+                         onclick="this.src='/authcode/getAuthCode.action?uid=$!uid&time='+new Date().getTime()"
+                         id="entimgs" align="absmiddle" class="codeimg">&nbsp;
+                    <a class="lightblue ns" href="javascript:changeImgage();">看不清楚</a> </label>
+                <label class="ts"></label>
+            </div>
+        </form>
+    </div>
+    <input id="vali" type="hidden" value="$!personMess.certificateType">
+
+    <div class="btn">
+        <input onclick="updateCpMess('$uid');" value="保存" type="button" class="btn_bg">
+    </div>
+</div>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Index">
+    
+  <typeAlias alias="forgetPass" type="com.jd.appstore.domain.paramter.ForgetPass"/>
+  <typeAlias alias="forgetPassResult" type="com.jd.appstore.domain.web.ForgetPassResult"/>
+
+  <select id="forgetPass" parameterClass="forgetPass" resultClass="forgetPassResult">
+    SELECT
+        b.email
+    FROM
+        tb_cp_baseinfo AS a,
+        tb_cp_reginfo AS b
+    WHERE
+        a.account = #account#
+    AND b.email = #email#
+    AND a.id = b.accountid
+  </select>
+</sqlMap>

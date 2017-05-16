@@ -1,0 +1,62 @@
+#set($layout="ajax.vm")
+<div class="right fr rounded">
+    <div class="top radius overflow"> 付费应用合同信息</div>
+    #if($!cpBaseinfo.defaultFeeMode==0)
+        <div class="cotBox" style="padding-bottom: 30px">
+            <div class="lsBd1">
+                <label class="bt">
+                    该功能尚未开通!
+                </label>
+            </div>
+        </div>
+    #else
+        <div class="cotBox" style="padding-bottom: 30px">
+            <div class="lsBd1">
+                <label class="bt">供应商简码：</label>
+                <label class="nr">
+                    $!cpBaseinfo.supplierNo
+                </label>
+            </div>
+            <div class="lsBd1">
+                <label class="bt">合同号：</label>
+                <label class="nr">
+                    $!cpBaseinfo.contractNumber
+                </label>
+            </div>
+            <div class="lsBd1">
+                <label class="bt">合同有效期限：</label>
+                <label class="nr">
+                    $!dateFormatUtils.format($!cpBaseinfo.validPeriodBegin ,"yyyy-MM-dd")
+                    - $!dateFormatUtils.format($!cpBaseinfo.validPeriodEnd ,"yyyy-MM-dd")
+                </label>
+            </div>
+            <div class="lsBd1">
+                <label class="bt">默认计费模式：</label>
+                <label class="nr">
+                    #if($!cpBaseinfo.defaultFeeMode==0)
+                        免费
+                    #elseif($!cpBaseinfo.defaultFeeMode==1)
+                        分成，无预付模式
+                    #elseif($!cpBaseinfo.defaultFeeMode==2)
+                        分成，有预付款模式
+                    #elseif($!cpBaseinfo.defaultFeeMode==3)
+                        买断模式
+                    #end
+                </label>
+            </div>
+            <div class="lsBd1">
+                <label class="bt">默认分成比例：</label>
+                <label class="nr">
+                    $!cpBaseinfo.defaultPercent %
+                </label>
+            </div>
+            <div class="lsBd1">
+                <label class="bt">审核备注：</label>
+                <label class="nr">
+                    $!cpBaseinfo.comment
+                </label>
+            </div>
+        </div>
+    #end
+
+</div>

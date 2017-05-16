@@ -1,0 +1,132 @@
+#set($layout="ajax.vm")
+<script type="text/javascript" src="$assetModule.getTarget("/appstore-man/js/jquery-1.4.2.min.js")"></script>
+<script type="text/javascript"
+        src="$assetModule.getTarget("/appstore-man/js/divselect.js")"></script>
+<script type="text/javascript"
+        src="$assetModule.getTarget("/appstore-man/js/alert.js")"></script>
+<script>
+    // 分页
+    function macroAjaxSubmit(url) {
+        loadTickAlert('加载中....');
+        var categoryId_l2 = $('#categoryId_l2').val();
+        var updateStatus = $('#updateStatus').val();
+        var online = $('#online').val();
+        var appName = $('#productName').val();
+        jQuery.ajax({
+                    type:"GET",
+                    url:url,
+                    data:{"categoryId_l2":categoryId_l2,
+                        "updateStatus": updateStatus,
+                        "online":online,
+                        "appName":appName},
+                    dataType:"html",
+                    success:function(msg) {
+                        jQuery('#main').html(msg);
+                        closeTickAlert();
+                    }
+                });
+    }
+    $(document).ready(function() {
+        $("#app-tabs a").removeClass();
+        var tab = $('#status').val();
+        document.getElementById(tab).className += "curr";
+    });
+
+</script>
+<div class="right roundeds">
+    <div class="top">
+        <div class="fl" id="app-tabs">
+            <a id="1" onclick="state('','',this.id);" style="cursor:pointer">全部应用($!statapks.totalCount)</a>
+            <a id="2" onclick="state(1,'',this.id);" style="cursor:pointer">待审核($!statapks.awaitApprovedCount)</a>
+##            <a id="3" onclick="state(3,'',this.id);" style="cursor:pointer">审核中($!statapks.onApprovedCount)</a>
+##            <a id="4" onclick="state('',1,this.id);" style="cursor:pointer">在线无更新($!statapks.onlineNoupdate)</a>
+            <a id="5" onclick="state(2,'',this.id);" style="cursor:pointer">审核不通过($!statapks.notApprovedCount)</a>
+            <a id="6" onclick="state('',2,this.id);" style="cursor:pointer">已下线($!statapks.outOnline)</a>
+            <label class="label">应用名称:</label>
+            <input class="input" id="productName" type="text" name="productName" value="$!keyWord"/>
+            <a id="7" onclick="state('','',this.id,$('#productName').val());" style="cursor:pointer">查询</a>
+        </div>
+
+    </div>
+
+    <ul class="content">
+        #if($apks.size()==0)
+            <li>
+                <div class="center fl">
+                    <p>
+                        暂无应用
+                    </p>
+                </div>
+
+            </li>
+        #else
+            #foreach($result in $apks)
+               #* #set($logoPath=$!PicResolutionEnum+$!result.logoUrl)*#
+                <li>
+
+                    <div class="app-ico fl">
+                        <img src="$imgServerModule.getTarget('')cover/$!result.logoUrl"/>
+                    </div>
+                    <div class="center fl">
+                        <h3>$!stringEscapeUtils.escapeHtml($!result.appName)</h3>
+
+                        <p class="stars"><span class="m_star m_$!result.star"></span></p>
+
+                        <p><span><img src="/appstore-man/images/praise.png"/>&nbsp;(0)&nbsp;</span>&nbsp;&nbsp;<span><img
+                                src="/appstore-man/images/down.png"/>&nbsp;#if(!$!result.downloadTimes)(0) #else
+                            ($!result.downloadTimes)&nbsp;#end</span>
+                        </p>
+                    </div>
+                    <div class="info fr">
+                        <p>
+                            审核状态：
+                            #if($!result.updateStatus==0)
+                                <span class="green">无更新</span>&nbsp;&nbsp;
+                            #elseif($!result.updateStatus==1)
+                                <span class="red">待审核</span>&nbsp;&nbsp;
+                            #elseif($!result.updateStatus==2)
+                                <span class="red">不通过</span>&nbsp;&nbsp;
+                            #else
+                                <span class="red">审核中</span>&nbsp;&nbsp;
+                            #end
+                            上线状态：
+                            #if( $!result.online==0 || $!result.updateStatus > 2 )
+                                <span class="red">未上线</span><br/>
+                            #elseif($!result.online==1)
+                                <span class="green">已上线</span><br/>
+                            #elseif($!result.online==2)
+                                <span class="red">已下线</span><br/>
+                            #end
+                            版 本：$!stringEscapeUtils.escapeHtml($!result.appVersion)<br/>
+                            最近更新时间：$!dateFormatUtils.format($!result.created,"yyyy-MM-dd")<br/>
+                            <a class="bule open_dialog" onclick="checkApkByappId($!result.appId,$!result.updateStatus);"
+                               style="cursor:pointer">查看</a> &nbsp;|&nbsp;
+                            <a class="bule" style="cursor:pointer"
+                                #if($!result.updateStatus==0)
+                                    #if($!result.categoryId_l2==$categoryUtils.getWebCategoryId())
+                               onclick="isModifyWeb($!result.appId,$!result.updateStatus);"
+                                    #else
+                               onclick="isModifyApk($!result.appId,$!result.updateStatus);"
+                                    #end
+                                #elseif( $!result.updateStatus==2)
+                                    #if($!result.categoryId_l2==$categoryUtils.getWebCategoryId())
+                               onclick="modifyWeb($!result.appId,$!result.updateStatus);"
+                                    #else
+                               onclick="modifyApk($!result.appId,$!result.updateStatus);"
+                                    #end
+                                #else
+                               onclick="javascript:alert('目前该应用还不能修改!');"
+                                #end>编辑</a>
+                        </p>
+                    </div>
+                </li>
+            #end
+        #end
+    </ul>
+</div>
+
+<div id="paging" style="float: right">
+    #set($pageModule = $homeModule.getTarget("/dev/checkApks.action").addQueryData("pageSize",$!pageSize))
+        #showPage($pageModule $apks)
+</div>
+

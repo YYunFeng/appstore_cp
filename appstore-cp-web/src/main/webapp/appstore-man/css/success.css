@@ -1,0 +1,20 @@
+.warp{background:url(../images/app_warp_bg.png) center top no-repeat;height:100%;overflow:hidden;padding-top:30px;}
+.rounded{border:1px solid #c1c1c1;-moz-border-radius:6px;-webkit-border-radius:6px;-khtml-border-radius:6px;border-radius:6px;}
+.warp .left{width:656px;height:365px;}
+/*imgPlay*/
+#imgPlay{MARGIN:0 auto;OVERFLOW:hidden;WIDTH:656px;ZOOM:1;POSITION:relative;HEIGHT:365px;}
+#imgPlay .imgs IMG{WIDTH:656px;height:365px;border:0;}
+#imgPlay .imgs LI{FLOAT:left;POSITION:relative;}
+#imgPlay .imgs{WIDTH:3936px;}
+#imgPlay .num{DISPLAY:inline;LEFT:250px;POSITION:absolute;TOP:320px;HEIGHT:16px;}
+#imgPlay .num SPAN{DISPLAY:inline-block;background:url(../images/focus_dots.png) no-repeat;MARGIN:0px 2px;OVERFLOW:hidden;WIDTH:16px;CURSOR:pointer;LINE-HEIGHT:0;HEIGHT:16px;}
+#imgPlay .num SPAN.on{BACKGROUND-POSITION:-16px 0;}
+#imgPlay #numInner{BACKGROUND:none transparent scroll repeat 0% 0%;PADDING:3px 0 0;POSITION:absolute;TOP:320px;TEXT-ALIGN:center;}
+.warp .right{width:325px;height:362px;background:url(../images/suc_rbg.jpg) #fdfecc center center no-repeat;overflow:hidden;position:relative;}
+.warp .right .title{margin:25px 0 0 38px;}
+.warp .right .title h1{font:18px "微软雅黑";font-weight:600;color:#525353;}
+.warp .right .trip_1{margin:35px 50px;}
+.warp .right .trip_2{margin:25px 40px 0 40px;}
+.warp .right p{font:14px "微软雅黑";line-height:26px;text-align:justify;text-justify:inter-ideograph;}
+.warp .right span{color:#5087e3;}
+.warp .right .btn{width:198px;height:88px;background:url(../images/btn_shadow.png) bottom center no-repeat;position:absolute;bottom:20px;left:64px;}

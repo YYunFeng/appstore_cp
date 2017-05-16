@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Aliyun">
+    <select id="getRes" resultClass="String" parameterClass="Integer">
+          select
+              res_url as resUrl
+          from
+             tb_app_resource
+          where
+             is_copy=0
+           and
+              res_type=#resType#
+    </select>
+    <select id="getLogo" resultClass="String">
+         select logo_url as logoUrl from tb_app_details
+    </select>
+</sqlMap>

@@ -1,0 +1,171 @@
+<link rel="stylesheet" href="$assetModule.getTarget("/appstore-man/css/index.css")" type="text/css" media="screen"/>
+<script type="text/javascript" src="$assetModule.getTarget("/appstore-man/js/alert.js")"></script>
+<script type="text/javascript" src="$assetModule.getTarget("/appstore-man/js/jd_banner.js")"></script>
+<div class="w">
+    <div id="imgPlay">
+        #if($recommend.size()==1)
+            #foreach($pic in $recommend)
+                <ul>
+                    <li>
+                        <a href="$pic.linkedUrl" target=_blank><img src="$recimageserver.getTarget($!pic.picUrl)"
+                                                                    width="990px" height="430px" border="0"/></a>
+                    </li>
+                </ul>
+            #end
+        #else
+            <ul class="imgs" id="actor">
+                #foreach($pic in $recommend)
+                    <li>
+                        <a href="$pic.linkedUrl" target=_blank><img src="$recimageserver.getTarget($!pic.picUrl)"/></a>
+                    </li>
+                #end
+            </ul>
+        #end
+        <div class="num" id="numInner"></div>
+    </div>
+</div>
+<div class="w">
+    <div class="app-steps rounded fl">
+        <div class="app-steps-pic"><img src="$assetModule.getTarget("/appstore-man/images/steps.png")" border="0"
+                                        usemap="#Map"/>
+            <map name="Map" id="Map">
+                <area shape="rect" coords="0,0,120,138" title="注册为开发者"/>
+                <area shape="rect" coords="167,0,287,138" title="创建应用"/>
+                <area shape="rect" coords="327,0,447,138" title="提交应用"/>
+                <area shape="rect" coords="489,0,609,138" title="审核通过"/>
+            </map>
+        </div>
+    </div>
+    <div class="index-login rounded fr">
+        #if ($!loginStatus == 2)
+            <div class="tirp_2">
+                <div class="ac">欢迎您，$!loginContext.getPin()</div>
+                <div class="ac"><a   style="cursor:pointer" onclick="createApk();">【创建应用】</a>
+                       <a href="$homeModule.getTarget('/exit.action')">【退出】</a>
+                </div>
+            </div>
+        #else
+            <div class="index-login  fr">
+                <div class="log-content">
+                    <div class="top"></div>
+                    <form name="formlogin" method="post" onsubmit="return false">
+                        <p class="form-row_1">
+                            <label class="label">用户名</label>
+                            <input id="username" class="input" type="text" name="username"/>
+                        </p>
+
+                        <p class="form-row_2"><label class="ts red"></label></p>
+
+                        <p class="form-row_1">
+                            <label class="label">密&#12288;码</label>
+                            <input id="password" class="input" type="password" name="password"/>
+                        </p>
+
+                        <p class="form-row_2"><label class="ts red"></label></p>
+
+                        <p class="form-row_3">
+                            <input id="loginsubmit" class="to-login" type="button" value="" onclick="login();">
+                            <input id="input_reg" class="to-reg" type="button" value=""
+                                   onclick="javascript:window.location.href='$assetModule.getTarget("/regist/regist.action")'">
+                        </p>
+
+                    </form>
+                </div>
+            </div>
+        #end
+    </div>
+</div>
+
+<script>
+    function createApk() {
+        window.location = '$homeModule.getTarget("/dev/devCenter.action").addQueryData("msg","createApp")';
+    }
+    function createWeb() {
+        window.location = '$homeModule.getTarget("/dev/devCenter.action").addQueryData("msg","createWeb")';
+    }
+</script>
+
+<script type="text/javascript">
+    (function() {
+        var object = document.getElementById("nav-home");
+        if (object)object.className += " curr";
+    })();
+</script>
+
+#*<div class="index-login rounded fr">
+    <div class="log-content">
+        <div class="top"></div>
+        <form name="formlogin" method="post" onsubmit="return false">
+            <p class="form-row_1">
+                <label class="label">用户名</label>
+                <input id="username" class="input" type="text" name="username"/>
+            </p>
+
+            <p class="form-row_2"><label class="ts red"></label></p>
+
+            <p class="form-row_1">
+                <label class="label">密&#12288;码</label>
+                <input id="password" class="input" type="password" name="password"/>
+            </p>
+
+            <p class="form-row_2"><label class="ts red"></label></p>
+
+            <p class="form-row_3">
+                <input id="loginsubmit" class="to-login" type="button" value="" onclick="login();">
+                <input id="input_reg" class="to-reg" type="button" value=""
+                       onclick="javascript:window.location.href='$assetModule.getTarget("/regist/regist.action")'">
+            </p>
+
+        </form>
+    </div>*#
+
+<script>
+    function login() {
+        var account = $('#username').val();
+        var password = $('#password').val();
+        jQuery.ajax({
+                    type: "POST",
+                    url:"$homeModule.getTarget("/index/login.action")",
+                    data:{
+                        "cpBaseinfo.account":account,
+                        "cpBaseinfo.password":password
+                    },
+                    dataType:'json',
+                    success: function (data) {
+                        if (data.msg == 'success') {
+                            window.location = "/index.action";
+                        } else {
+                            alert("aaa");
+                            alert(data.msg);
+                        }
+                    }
+                });
+    }
+    /* $("#loginsubmit").click(function () {
+        var account = $('#username').val();
+        var password = $('#password').val();
+        jQuery.ajax({
+            type: "POST",
+            data:{
+                  "cpBaseinfo.account":account,
+                  "cpBaseinfo.password":password,
+                   "r":Math.random()
+                 },
+            url: '/index/login.action',
+            dataType: 'json',
+            success: function (data) {
+                if (data.msg == 'success') {
+                    window.location = "/index/home.action?id=" + data.id + "&account=" + data.account;
+                } else {
+                    alert('用户名或者密码不正确!');
+                }
+            }
+        });
+    });*/
+</script>
+<script type="text/javascript">
+    (function () {
+        var object = document.getElementById("nav-home");
+        if (object)object.className += " curr";
+    })();
+</script>

@@ -1,0 +1,11 @@
+document.writeln("<div id=\"menu-box\">");
+document.writeln("			<script type=\"text/javascript\" src=\"js/menu.js\"></script>");
+document.writeln("			<div class=\"box\">");
+document.writeln("			  <h1><div class=\"title_4\"><span class=\"menu1\"></span></div></h1>");
+document.writeln("			  <ul class=\"list\">");
+document.writeln("              	<li><div class=\"ico_1 fl\"></div><a id=\"menu_1\" href=\"down_num.html\">下载次数</a></li>");
+document.writeln("                <li><div class=\"ico_2 fl\"></div><a id=\"menu_2\" href=\"#\">设备统计</a></li>");
+document.writeln("                <li><div class=\"ico_3 fl\"></div><a id=\"menu_3\" href=\"#\">区域分布</a></li>");
+document.writeln("			  </ul>");
+document.writeln("			</div>");
+document.writeln("        </div>");

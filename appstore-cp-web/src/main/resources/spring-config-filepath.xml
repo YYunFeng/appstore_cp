@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-autowire="byName">
+
+    <bean id="filePathUtils" class="com.jd.appstore.domain.utils.FilePathUtils">
+        <property name="androidApkPath" value="${appstore.cp.filepath.android.apk}"/>
+        <property name="webSwfPath" value="${appstore.cp.filepath.web.swf}"/>
+        <property name="coverPicPath" value="${appstore.cp.filepath.cover.pic}"/>
+        <property name="imgPicPath" value="${appstore.cp.filepath.img.pic}"/>
+    </bean>
+
+</beans>

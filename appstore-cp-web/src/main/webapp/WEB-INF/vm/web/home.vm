@@ -1,0 +1,144 @@
+<link rel="stylesheet" href="$assetModule.getTarget("/appstore-man/css/success.css")" type="text/css" media="screen"/>
+<script type="text/javascript" src="$assetModule.getTarget("/appstore-man/js/alert.js")"></script>
+<div class="w">
+    <div class="warp">
+        <!--left_start-->
+        <div class="left fl">
+            <div class="default-banner" id="slideContent">
+                <div style="opacity: 1;" class="slide-content ">
+                    <div class="index-slide-img">
+                        <div class="center"></div>
+                    </div>
+                </div>
+                <ul class="focus-content clearfix">
+                    <li class="focus-content-item default-focus"><a idx="0" href="javascript:void(0);"
+                                                                    class="focus-anchor" hidefocus=""></a></li>
+                    <li class="focus-content-item challenge-focus"><a idx="1" href="javascript:void(0);"
+                                                                      class="focus-anchor" hidefocus=""></a></li>
+                    <li class="focus-content-item meeting-focus"><a idx="2" href="javascript:void(0);"
+                                                                    class="focus-anchor" hidefocus=""></a></li>
+                </ul>
+            </div>
+        </div>
+        <!--left_end-->
+        <!--right_start-->
+        <div class="right fr rounded">
+            <div class="title">
+                <h1>登&nbsp;&nbsp;录</h1>
+            </div>
+            <!--登陆成功-->
+            #if($!userStatus.flag == "isEmpty")
+                <div class="trip_1" style="display:">
+                    <p>Hi！<span>$!account</span>,你现在还<br/>
+                        没有上传过应用，赶紧加入我们吧！</p>
+                    <div class="btn">
+                        <input value="创建应用" class="open" type="image"
+                               src="$assetModule.getTarget("/appstore-man/images/create_app_btn.png")">
+                    </div>
+                </div>
+            #else
+                <!--管理应用-->
+                <div class="trip_2" style=" display:">
+                    <p>Hi！<span>$!account</span>：<br/>
+                        
+                        你上传了 $!userStatus.totalCount 个应用，
+                             未上线:
+                        #if($!userStatus.notOnlineCount)
+                            $!userStatus.notOnlineCount
+                        #else
+                             0
+                        #end 个，
+
+                            已上线:
+                         #if( $!userStatus.onlineCount)
+                            $!userStatus.onlineCount
+                        #else
+                             0
+                        #end 
+                          个,
+                            已下线:
+                        #if($!userStatus.outOnlineCount)
+                            $!userStatus.outOnlineCount
+                        #else
+                             0
+                        #end
+                         个，</p>
+
+                    <div class="btn">
+                        <input onclick="managerApp();" value="管理应用" type="image"
+                               src="$assetModule.getTarget("/appstore-man/images/manage_app_btn.png")"/>
+                    </div>
+                </div>
+            #end
+        </div>
+        <!--right_end-->
+    </div>
+</div>
+<script type="text/javascript">
+    (function() {
+        var object = document.getElementById("nav-home");
+        if (object)object.className += " curr";
+    })();
+</script>
+<script type="text/javascript">
+    //banner slide
+    (function() {
+        var time = 3000,slideEl = $("#slideContent"),indexAt = 1,slideHode = false;
+        var changeClass = ["default-banner","challenge-banner","meeting-banner"];
+        var changeAncher = ["","",""];
+        var cnangeLength = changeClass.length;
+        var changeBanner = function(index) {
+            if (!slideHode) {
+                slideEl.children(".slide-content").fadeTo("normal", "0.3", function() {
+                    slideEl.attr("class", changeClass[index]).children(".slide-content").fadeTo("normal", "1").find(".blank-anchor").attr("href", changeAncher[index]);
+                    indexAt = index + 1;
+                    indexAt %= cnangeLength;
+                });
+            }
+        }
+        var slide = function() {
+            setTimeout(function() {
+                changeBanner(indexAt);
+                setTimeout(slide, time)
+            }, time);
+        }
+        slide();
+        $(".focus-content").bind({
+                    "click":function(e) {
+                        var $target =
+                        $(e.target);
+                        if ($target.context.tagName.toLowerCase() == "a"
+                        )
+                        {
+                            var idx = parseInt($target.attr("idx"));
+                            changeBanner(idx);
+                        }
+                    }
+                });
+        $(".slide-content").bind({
+                    "mouseenter":function() {
+                        slideHode = true;
+                    }
+                    ,"mouseleave":function() {
+                        slideHode = false;
+                    }
+                });
+    })();
+</script>
+<script>
+    function createApk() {
+        window.location = '$homeModule.getTarget("/dev/devCenter.action").addQueryData("msg","createApp")';
+    }
+    function createWeb() {
+        window.location = '$homeModule.getTarget("/dev/devCenter.action").addQueryData("msg","createWeb")';
+    }
+    function managerApp(){
+        window.location = '$homeModule.getTarget("/dev/devCenter.action")';
+    }
+</script>
+<script type="text/javascript">
+    (function() {
+        var object = document.getElementById("nav-home");
+        if (object)object.className += " curr";
+    })();
+</script>

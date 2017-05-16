@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-autowire="byName">
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"/>
+
+    <bean id="cacheUtils" class="com.jd.digital.common.util.cache.CacheUtils">
+        <property name="cacheServerAddress">
+            <list>
+                <value>${appstore.cp.memcached1.address}</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="cpBaseinfoManager" class="com.jd.appstore.manager.cp.impl.CpBaseinfoManagerImpl"/>
+    <bean id="cpReginfoManager" class="com.jd.appstore.manager.cp.impl.CpReginfoManagerImpl"/>
+    <bean id="addDeveloperPersonManager" class="com.jd.appstore.manager.cp.impl.AddDeveloperManagerImpl"/>
+    <bean id="indexManager" class="com.jd.appstore.manager.cp.impl.IndexManagerImpl"/>
+    <bean id="devCenterManager" class="com.jd.appstore.manager.cp.impl.DevCenterManagerImpl"/>
+    <bean id="devCenterManagerCached" class="com.jd.appstore.manager.cp.impl.DevCenterManagerCachedImpl"/>
+    <bean id="dataCenterManager" class="com.jd.appstore.manager.cp.impl.DataCenterManagerImpl"/>
+    <bean id="dataCenterManagerCached" class="com.jd.appstore.manager.cp.impl.DataCenterManagerCachedImpl"/>
+    <bean id="bindMobileManager" class="com.jd.appstore.manager.cp.impl.BindMobileManagerImpl"/>
+    <bean id="getAddressManager" class="com.jd.appstore.manager.cp.impl.GetAddressManagerImpl"/>
+    <bean id="getOsVersionIdManager" class="com.jd.appstore.manager.cp.impl.GetOsVersionIdManagerImpl"/>
+    <bean id="aliyunManager" class="com.jd.appstore.manager.cp.impl.AliyunManagerImpl"/>
+
+
+</beans>

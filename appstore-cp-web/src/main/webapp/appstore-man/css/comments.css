@@ -1,0 +1,50 @@
+/*::::::::::::::::comment:::::::::::::::::::::::::::::*/
+#comment{padding:20px 0 0 10px;margin-top:14px;border-top:1px solid #d6d6d6;overflow: hidden;}
+#comment .tab,#discuss .tab{height:27px;border-bottom:1px solid #e2076d;margin-bottom:10px;overflow:visible;}
+#comment .tab li,#discuss .tab li{position:relative;background:url(../images/btn.png) no-repeat 0 -284px;height:27px;line-height:27px;width:118px;text-align:center;margin:0 5px 0 0;cursor:pointer; font-size:15px;font-family:"microsoft yahei";}
+#comment .tab .curr,#discuss .tab .curr{background:url(../images/btn.png) no-repeat 0 -313px;width:118px;height:27px;margin:0 5px -1px 0;}
+#comment .tab li a,#discuss .li a{float:none;}
+.i-comment{padding:10px 0;margin-bottom:10px;margin-right:10px;border:1px solid #E4E4E4; background-color:#f9f8f6;overflow:hidden;zoom:1;}
+.i-comment .rate{float:left;width:120px;height:65px;padding:15px 0 0;border-right:1px solid #E4E4E4;text-align:center;color:#be015d;}
+.i-comment .rate strong{line-height:36px;font-size:30px;font-family:arial;}
+.i-comment .percent{float:left;width:290px;height:70px;padding:5px 0px 5px 20px;border-right:1px solid #E4E4E4;}
+.i-comment .percent dl{padding:2px 0;overflow:hidden;zoom:1;}
+.i-comment .percent dt,.percent dd{float:left;margin-right:5px;}
+.i-comment .percent .d1{width:150px;height:7px;margin-top:6px;overflow:hidden;}
+.i-comment .percent .d1 div{height:7px; background-color:#be015d;border-radius:8px;-moz-border-radius:8px;-webkit-border-radius:8px;overflow:hidden;}
+.i-comment .actor{float:left;position:relative;width:115px;height:70px;padding:5px 15px 5px 36px;border-right:1px solid #E4E4E4;overflow:hidden;zoom:1;}
+.i-comment .actor b{position:absolute;left:15px;top:5px;width:18px;height:18px;background:url(http://misc.360buyimg.com/201007/skin/df/i/icon_clubs.gif) #000 no-repeat -21px -49px;}
+.i-comment .actor span{float:left;}
+.i-comment .actor a{color:#005aa0;}
+.i-comment .actor .u-name{float:left;margin-right:16px;white-space:nowrap;color:#005aa0;}
+.i-comment .btns{float:left;width:120px;height:65px;padding:10px 0 5px 170px;text-align:center;font-family:"microsoft yahei";color:#3e3634;}
+.i-comment .btn-comment{display:block;width:83px;height:26px;background:url(../images/btn.png) no-repeat 0 -341px;line-height:100px;overflow:hidden;margin:5px auto 2px;}
+#comment .item{position:relative;padding:0 0 2px 130px;margin-bottom:20px;min-height: 130px; margin-right: 10px;zoom:1;background-color:#F5F4EF;}
+#comment .user{position:absolute;top:0;left:0;width:130px;text-align:center;color:#999;}
+#comment .user a{color:#005aa0;}
+#comment .u-icon{width:81px; height:81px; margin:12px 0 0 25px;background-color:#fff;border-radius:6px;-moz-border-radius:6px;-webkit-border-radius:6px;box-shadow:0 0 2px #fff;}
+#comment .u-icon img{width:75px; height:75px; margin:3px;border-radius:6px;-moz-border-radius:6px;-webkit-border-radius:6px;}
+#comment .i-item{padding:10px 4px 5px;border:1px solid #c5c5c5;background:#f9f8f6;}
+#comment .o-topic{padding:0 8px 8px;margin-bottom:10px;border-bottom:1px solid #c5c5c5;overflow:hidden;zoom:1;}
+#comment .topic{float:left;color:#3e3634;}
+#comment .star{float:left;margin:2px 0 0 5px;}
+.date-comment{float:right;color:#999;}
+#comment .comment-content{min-height:54px; padding:0 10px 8px;}
+#comment .comment-content p{ padding-top:2px; padding-bottom:2px;}
+#comment .comment-content p span{ color:#be015d;}
+#comment .item .btns{height:25px;padding:10px 0 5px 2px;line-height:25px;overflow:hidden;zoom:1;}
+#comment .btn-reply,#comment .btn-agree,#comment .btn-oppose{width:62px;height:25px;background:url(http://misc.360buyimg.com/201007/skin/df/i/icon_clubs.gif) no-repeat 0 -328px;border:0;text-align:center;margin-right:5px;}
+#comment .btn-agree,#comment .btn-oppose{float:left;color:#005aa0;text-decoration:none;}
+#comment .btn-reply{float:right;}
+#comment .useful{float:left;}
+#comment .useful span{float:left;margin-right:5px;color:#999;}
+.item-reply{position:relative;padding-left:50px;zoom:1;}
+.item-reply strong{display:block;position:absolute;top:6px;left:0;width:45px;color:#BEBEBE;font-size:20px;font-family:arial;text-align:right;}
+.item-reply dl{border-top:1px solid #F4F4F4;padding:5px;}
+.item-reply dt{margin-bottom:4px;color:#999;overflow:hidden;zoom:1;}
+.item-reply dt .u-name{float:left;}
+.item-reply dt a{float:left;color:#005aa0;margin-right:8px;}
+.item-reply dt .date-comment{float:right;}
+#comment .tl{top:44px;left:117px;width:15px;height:35px;position:absolute;background:url(../images/icon_18.png) no-repeat;}
+
+#comment #paging{ margin:0 10px 20px;float:right;}

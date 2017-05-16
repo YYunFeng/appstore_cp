@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AppDetails">
+    <typeAlias alias="AppDetails" type="com.jd.appstore.domain.AppDetails"/>
+    <typeAlias alias="UserStatus" type="com.jd.appstore.domain.web.UserStatus"/>
+    <insert id="createAppDetails" parameterClass="AppDetails">
+        insert into tb_app_details
+        (id,appid,accountid,fee_mode,price,percent,period1_begin,period1_end,percent2,period2_begin,period2_end,percent3,
+        period3_begin,period3_end,prepay,buyout,
+        buyout_begin,buyout_end,app_version,logo_url,os_version_id,pkg_size,online,
+        update_status,pub_time,ad_text,app_tag,new_features,app_introduce,created,modified)
+        values
+        (#id#,#appId#,#accountId#,#feeMode#,#price#,#percent#,#period1Begin#,#period1End#,#percent2#,#period2Begin#,
+        #period2End#,#percent3#,#period3Begin#,#period3End#,#prepay#,#buyout#,#buyoutBegin#,
+        #buyoutEnd#,#appVersion#,#logoUrl#,#osVersionId#,#pkgSize#,#online#,#updateStatus#,#pubTime#,#adText#,
+        #appTag#,#newFeatures#,#appIntroduce#,now(),
+        #modified#)
+    </insert>
+    <select id="isHavaApp" parameterClass="int" resultClass="UserStatus">
+        select
+        online as online,
+        sum(id) as count from
+        (select
+        online,count(id) as id
+        from
+        tb_app_details
+        where
+        accountid = #id#
+        group by
+        online
+        union
+        select
+        online ,count(id) as id
+        from
+        tb_app_detail_log
+        where
+        accountid = #id#
+        and
+        valid = 0
+        group by
+        online)
+        as t
+        group by
+        online
+    </select>
+    <update id="updateAppDetails" parameterClass="AppDetails">
+        update
+        tb_app_details
+        set
+        update_status = 1
+        where
+        accountId = #accountId#
+        and
+        appId = #appId#
+    </update>
+
+    <!--验证cp修改应用是否未自己的应用-->
+    <select id="authCp" parameterClass="AppDetails" resultClass="java.lang.Integer">
+        SELECT
+        count(*)
+        FROM
+        tb_app_details
+        WHERE
+        id = #id#
+        AND accountid = #accountId#
+        AND appid = #appId#
+    </select>
+
+
+</sqlMap>

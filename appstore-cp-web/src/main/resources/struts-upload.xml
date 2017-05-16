@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="upload" namespace="/upload" extends="appstore-default">
+        <action name="uploadApk" method="uploadApk" class="com.jd.appstore.web.action.cp.UploadAction">
+            <param name="account"/>
+        </action>
+        <action name="uploadWeb" method="uploadWeb" class="com.jd.appstore.web.action.cp.UploadAction">
+            <param name="account"/>
+        </action>
+        <action name="uploadPic" method="uploadPic" class="com.jd.appstore.web.action.cp.UploadAction">
+            <param name="account"/>
+        </action>
+        <action name="uploadApkJss" method="uploadApkJss" class="com.jd.appstore.web.action.cp.UploadAction">
+            <param name="account"/>
+        </action>
+        <action name="uploadLogo" method="uploadLogo" class="com.jd.appstore.web.action.cp.UploadAction">
+            <param name="account"/>
+        </action>
+        <action name="readApk" method="readApk" class="com.jd.appstore.web.action.cp.UploadAction">
+        </action>
+        <action name="mess" method="mess" class="com.jd.appstore.web.action.cp.UploadAction">
+        </action>
+
+    </package>
+</struts>
+ 

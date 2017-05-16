@@ -1,0 +1,56 @@
+#set($layout="ajax.vm")
+<div class="right  rounded">
+    <div class="top radius overflow">公司信息</div>
+    <div class="cotBox">
+            <div class="lsBd1">
+                <label class="bt">用 户 名：</label>
+                <label class="nr">$!stringEscapeUtils.escapeHtml($!personMess.account)
+                </label>
+            </div>
+           <div class="lsBd1">
+                <label class="bt">企业名称：</label>
+                <label class="nr">$!stringEscapeUtils.escapeHtml($!personMess.cpName)
+                </label>
+            </div>
+            <div class="lsBd1">
+                <label class="bt">联系人姓名：</label>
+                <label class="nr">
+                    $!stringEscapeUtils.escapeHtml($!personMess.contacter)
+                </label>
+            </div>
+            <div class="lsBd2">
+                <label class="bt">营业执照编号：</label>
+                <label class="nr">
+                     $!stringEscapeUtils.escapeHtml($!personMess.certificateNo)
+                </label>
+                <label class="ts"></label>
+            </div>
+            <div class="lsBd2">
+                <label class="bt">其他联系方式：</label>
+                <label class="nr">
+                    $!stringEscapeUtils.escapeHtml($!personMess.otherContact)
+                </label>
+            </div>
+            <div class="lsBd2">
+                <label class="bt">网站：</label>
+                <label class="nr">
+                     $!stringEscapeUtils.escapeHtml($!personMess.webadd)
+                </label>
+            </div>
+            <div class="lsBd1">
+                <label class="bt">地址：</label>
+                <label class="nr">
+                     $!personMess.province $!personMess.city $!personMess.district  $!stringEscapeUtils.escapeHtml($!personMess.address)
+                </label>
+            </div>
+            <div class="lsBd2">
+                <label class="bt">传 &nbsp;&nbsp; 真：</label>
+                <label class="nr">
+                    $!stringEscapeUtils.escapeHtml($!personMess.fax)
+                </label>
+            </div>
+    </div>
+    <div class="btn">
+        <input onclick="modifyCompanyMess();" value="修改" type="button" class="btn_bg">
+    </div>
+</div>

@@ -1,0 +1,16 @@
+#set($layout="ajax.vm")
+<div class="mt"><span class="tit"><strong>应用名称</strong></span> <span
+        class="tpsd"><strong>过去七天</strong></span> <span class="total"><strong>总下载量</strong></span></div>
+<ul>
+    #foreach($list in $statusDownload)
+        <li onclick="statAppByTime('$list.appName','$list.sevenDaysAwayCount','$list.totalCount','$list.appId')"><span
+                class="tit">$list.appName</span> <span
+                class="tpsd">过去七天：$list.sevenDaysAwayCount</span><span
+                class="total">总下载量：$list.totalCount</span></li>
+    #end
+</ul>
+
+<div id="paging" class="fr">
+    #set($pageModule = $homeModule.getTarget("/datacenter/stautAppCheck.action").addQueryData("pageSize",$!pageSize))
+            #showPage($pageModule $statusDownload)
+</div>

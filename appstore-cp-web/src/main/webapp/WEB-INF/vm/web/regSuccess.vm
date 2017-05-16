@@ -1,0 +1,15 @@
+<link rel="stylesheet" href="$assetModule.getTarget("/appstore-man/css/regist.css")" type="text/css" media="screen">
+<div class="w">
+    <div id="register">
+        <div class="success">
+            <div class="suc-box">
+                <div class="success-1">
+                    <i></i>
+                    <div class="fl">
+                        <span class="yahei">恭喜，您已经成为开发者!</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

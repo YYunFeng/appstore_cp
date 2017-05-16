@@ -1,0 +1,33 @@
+/*imgPlay*/
+#imgPlay{MARGIN:0 auto;OVERFLOW:hidden;WIDTH:990px;ZOOM:1;POSITION:relative;HEIGHT:430px}
+#imgPlay .imgs IMG{WIDTH:990px;height:430px;border:0;}
+#imgPlay .imgs LI{FLOAT:left;POSITION:relative}
+#imgPlay .imgs{WIDTH:5940px}
+#imgPlay .num{DISPLAY:inline;LEFT:465px;POSITION:absolute;TOP:385px;HEIGHT:16px}
+#imgPlay .num SPAN{DISPLAY:inline-block;background:url(../images/focus_dots.png) no-repeat;MARGIN:0px 2px;OVERFLOW:hidden;WIDTH:16px;CURSOR:pointer;LINE-HEIGHT:0;HEIGHT:16px}
+#imgPlay .num SPAN.on{BACKGROUND-POSITION:-16px 0;}
+#imgPlay #numInner{BACKGROUND:none transparent scroll repeat 0% 0%;PADDING:3px 0 0;POSITION:absolute;TOP:385px;TEXT-ALIGN:center}
+/*app-steps*/
+.rounded{border:1px solid #cdcdcd;-moz-border-radius:6px;-webkit-border-radius:6px;-khtml-border-radius:6px;border-radius:6px;}
+.app-steps{width:654px;height:235px;margin-top:10px;background:url(../images/app_steps_bg.png) repeat-x;text-align:center;}
+.app-steps-pic{height:135px;width:608px;margin:50px 23px;}
+/*index-login*/
+.index-login{width:324px;height:235px;margin-top:10px;font-size:14px;font-family:"Microsoft YaHei";background:url(../images/app_steps_bg.png) repeat-x;overflow:hidden;}
+.index-login .tirp_1{margin:98px auto;width:140px;}
+.index-login .tirp_2{margin:72px auto;height:72px;line-height:36px;}
+.index-login a{ padding-left:6px; padding-right:6px;}
+.index-login a:hover{ text-decoration:none;}
+.index-login .to-login{background:url(../images/login.png) no-repeat scroll 0 -28px transparent;border:0 none;cursor:pointer;height:29px;outline:medium none;width:101px;margin:0 8px 0 32px;}
+.index-login .to-reg{background:url(../images/login.png) no-repeat scroll 0 -58px transparent;border:0 none;cursor:pointer;height:30px;outline:medium none;width:106px;margin:0 8px 0 8px;}
+.index-login .log-content .passport{padding-right:42px;}
+
+
+.index-login .log-content .top{width:318px;height:25px;margin:15px 0 22px 0;background:url(../images/login.png) 0px -2px no-repeat;}
+.index-login .log-content .form-row_1{padding:1px 0 0px 20px;}
+.index-login .log-content .form-row_2{height:16px;line-height:16px;padding-left:116px;}
+.index-login .log-content .form-row_2 .ts{font-size:12px;text-align:left;}
+.index-login .log-content .form-row_3{padding:8px 0 8px 20px;}
+.index-login .log-content .label{color:#284c6a;font-family:"Microsoft YaHei","STSong";font-weight:normal;display:inline-block;padding-bottom:4px;font-size:15px;text-align:center;width:90px;}
+.index-login .log-content .input{border:0;text-shadow:0px 0px 0 #cdcdcd;-moz-border-radius:3px;-webkit-border-radius:3px;-khtml-border-radius:3px;border-radius:3px;color:#666666;background-color:#dadada;height:22px;line-height:22px;padding:3px;width:160px;color:#284c6a;font-size:14px;font-family:"Microsoft YaHei","STSong";font-weight:normal;}
+
+

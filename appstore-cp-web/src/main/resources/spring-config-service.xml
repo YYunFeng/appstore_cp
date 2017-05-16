@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-autowire="byName">
+
+    <bean id="cpBaseinfoService" class="com.jd.appstore.service.cp.impl.CpBaseinfoServiceImpl"/>
+    <bean id="cpReginfoService" class="com.jd.appstore.service.cp.impl.CpReginfoServiceImpl"/>
+    <bean id="addDeveloperService" class="com.jd.appstore.service.cp.impl.AddDeveloperServiceImpl"/>
+    <bean id="indexService" class="com.jd.appstore.service.cp.impl.IndexServiceImpl">
+        <property name="loginCookieKey" value="${appstore-cp.cookie.name}"/>
+        <property name="dotnetAuthCookieName" value="${appstore-cp.hrm.auth.cookie.name}"/>
+    </bean>
+    <bean id="devCenterService" class="com.jd.appstore.service.cp.impl.DevCenterServiceImpl"/>
+
+    <bean id="dataCenterService" class="com.jd.appstore.service.cp.impl.DataCenterServiceImpl">
+        <property name="excelPath" value="${appstore.cp.filepath.excel.path}"/>
+        <property name="downloadPath" value="${appstore.cp.filepath.excel}"/>
+    </bean>
+    <bean id="bindMobileService" class="com.jd.appstore.service.cp.impl.BindMobileServiceImpl"/>
+    <bean id="getAddressService" class="com.jd.appstore.service.cp.impl.GetAddressServiceImpl"/>
+    <bean id="aliyunService" class="com.jd.appstore.service.aliyun.impl.AliyunServiceImpl">
+        <property name="bucketName" value="${appstore-cp.aliyun.bucketName}"/>
+        <property name="accessKeyId" value="${appstore-cp.aliyun.accessKeyId}"/>
+        <property name="accessKeySecret" value="${appstore-cp.aliyun.accessKeySecret}"/>
+        <property name="tempBucketName" value="${appstore-cp.aliyun.tempbucketName}"/>
+        <property name="endpoint" value="${appstore-cp.aliyun.endpoint}"/>
+    </bean>
+
+    <bean id="uploadAliyunJob" class="com.jd.appstore.service.job.UploadAliyunJob"/>
+</beans>

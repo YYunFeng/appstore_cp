@@ -1,0 +1,81 @@
+#set($layout="ajax.vm")
+<head>
+    <script src="$assetModule.getTarget("/appstore-man/js/highcharts.js")"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+        var statTime = new Array();
+        var counts = new Array();
+            #foreach($list in $statAppReuslt)
+            statTime.push('$!list.time');
+            counts.push($!list.count);
+            #end
+        var appName = $('#app_Name').val();
+        $(function () {
+            var chart;
+            $(document).ready(function() {
+                chart = new Highcharts.Chart({
+                            chart: {
+                                renderTo: 'container',
+                                type: 'line',
+                                marginRight: 100,
+                                marginBottom: 35,
+                            },
+                            title: {
+                                text: appName + '的下载统计',
+                                x: -20 //center
+                            },
+                            subtitle: {
+                                text: '下载统计: 次数',
+                                x: -20
+                            },
+                            xAxis: {
+                                allowDecimals:false,
+                                categories :statTime
+                            },
+                            yAxis: {
+                                minPadding:0.2,
+                                allowDecimals:false,
+                                title: {
+                                    text: '次数 (次)'
+                                },
+                                min:0,
+                                plotLines: [
+                                    {
+                                        value: 0,
+                                        width: 1,
+                                        color: '#808080'
+                                    }
+                                ]
+                            },
+                            tooltip: {
+                                formatter: function() {
+                                    return '<b>' + this.series.name + '</b><br/>' +
+                                            this.x + ': ' + this.y + '次';
+                                }
+                            },
+                            legend: {
+                                layout: 'vertical',
+                                align: 'right',
+                                verticalAlign: 'top',
+                                x: 100,
+                                y: 100,
+                                borderWidth: 0
+                            },
+                            credits:false,
+                            series: [
+                                {
+                                    name: appName,
+                                    data: counts
+                                }
+                            ]
+
+                        });
+            });
+
+        });
+    </script>
+</head>
+<body>
+<div id="container" style="min-width: 400px; height: 500px; margin: 0 auto;padding-bottom: 10px;"></div>
+</body>

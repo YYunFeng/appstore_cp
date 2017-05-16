@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="DataCenter">
+     <typeAlias alias="statusDownload" type="com.jd.appstore.domain.paramter.StatusDownload"/>
+    <typeAlias alias="downStatus" type="com.jd.appstore.domain.web.DownStatus"/>
+    <typeAlias alias="statAppReuslt" type="com.jd.appstore.domain.web.StatAppReuslt"/>
+    <typeAlias alias="statAppDown" type="com.jd.appstore.domain.paramter.StatAppDown"/>
+    <typeAlias alias="countAppParameter" type="com.jd.appstore.domain.paramter.CountAppParameter"/>
+    <typeAlias alias="countAppResult" type="com.jd.appstore.domain.web.CountAppResult"/>
+    <select id="getInstallApps" parameterClass="countAppParameter" resultClass="countAppResult">
+        SELECT
+            c.appid AS appid,
+            c.appName AS appName,
+            sum(c.installCounts) AS installCounts
+        FROM
+            (
+            SELECT
+                apps.appid AS appid,
+                apps.app_name AS appName,
+                count(
+                DISTINCT installstat.appid,
+                installstat.phone_imei
+                ) AS installCounts,
+                STR_TO_DATE(
+                CONCAT(
+                installstat. YEAR,
+                '-',
+                installstat. MONTH,
+                '-',
+                installstat. DAY
+                ),
+                '%Y-%c-%e'
+                ) AS installTime
+            FROM
+                tb_apps AS apps,
+                tb_offlineapp_install_stat AS installstat,
+                tb_app_details AS details
+            WHERE
+                  apps.appid = installstat.appid
+            AND
+            STR_TO_DATE(
+            CONCAT(
+            installstat. YEAR,
+            '-',
+            installstat. MONTH,
+            '-',
+            installstat. DAY
+            ),
+            '%Y-%c-%e'
+            ) BETWEEN STR_TO_DATE(#startTime#, '%Y-%c-%e')
+            AND STR_TO_DATE(#endTime#, '%Y-%c-%e')
+            AND details.id = apps.default_detail_id
+            AND details.appid = apps.appid
+            AND details.accountid = #accountId#
+            AND
+             <![CDATA[ installstat.created >= #startTime#]]>
+            AND
+             <![CDATA[ installstat.created <= #endTime# ]]>
+            GROUP BY
+            apps.appid,
+            installstat.saler,
+            installTime
+            ) AS c
+                GROUP BY
+                appid
+        <isEqual prepend="" property="flag" compareValue = "0">
+            limit
+            #endRow#
+            offset
+            #startRow#
+        </isEqual>
+    </select>
+
+    <!--安装量的手机串号-->
+    <select id="getPhoneImeiFromInstall" parameterClass="countAppParameter" resultClass="countAppResult">
+        SELECT
+        apps.app_name AS appName,
+        saleLog.phone_imei AS phoneImei,
+        saleLog.phone_model_name AS phoneModelName,
+        date_format(
+        saleLog.install_time,
+        '%Y-%m-%d'
+        ) AS installTime
+        FROM
+        tb_apps AS apps,
+        tb_offlineapp_sale_log AS saleLog
+        WHERE
+        apps.appid = saleLog.appid
+        AND apps.appid = #appid#
+        AND
+        <![CDATA[ saleLog.install_time >= #startTime#]]>
+        AND
+        <![CDATA[ saleLog.install_time <= #endTime# ]]>
+        AND
+        <![CDATA[ saleLog.created >= #startTime#]]>
+        AND
+        <![CDATA[ saleLog.created <= #endTime# ]]>
+        GROUP BY
+        saleLog.appid,phone_imei,saleLog.saler_no,installTime
+        <isEqual prepend="" property="flag" compareValue = "0">
+            limit
+            #endRow#
+            offset
+            #startRow#
+        </isEqual>
+    </select>
+
+    <select id="getPhoneImeiFromInstallCounts" parameterClass="countAppParameter" resultClass="Integer">
+        select
+        count(DISTINCT appid,phone_imei,saler_no,saleLog.install_time)
+        from
+        tb_offlineapp_sale_log AS saleLog
+        where
+        appid = #appid#
+        AND
+        <![CDATA[ saleLog.install_time >= #startTime#]]>
+        AND
+        <![CDATA[ saleLog.install_time <= #endTime# ]]>
+        AND
+        <![CDATA[ saleLog.created >= #startTime#]]>
+        AND
+        <![CDATA[ saleLog.created <= #endTime# ]]>
+    </select>
+
+    <select id="getCountApps" resultClass="countAppResult" parameterClass="countAppParameter">
+        SELECT
+        apps.appid AS appid,
+        count(
+        DISTINCT countApp.phone_imei
+        ) AS countApps
+        FROM
+        tb_count_app AS countApp,
+        tb_apps AS apps,
+        tb_offlineapp_sale_log AS saleLog,
+        tb_app_details AS details
+        WHERE
+        apps.appid = countApp.appid
+        AND details.id = apps.default_detail_id
+        AND details.appid = apps.appid
+        AND details.accountid = #accountId#
+        AND countApp.appid = saleLog.appid
+        AND countApp.phone_imei = saleLog.phone_imei
+        <isNotEmpty prepend="and" property="startTime">
+             STR_TO_DATE(
+            countApp.created,
+            '%Y-%c-%e'
+            ) BETWEEN STR_TO_DATE(#startTime#, '%Y-%c-%e')
+            AND STR_TO_DATE(#endTime#, '%Y-%c-%e')
+        </isNotEmpty>
+        GROUP BY
+          appid
+    </select>
+
+    <select id="getCountAppsCounts" parameterClass="countAppParameter" resultClass="Integer">
+        SELECT
+        count(DISTINCT apps.appid)
+        FROM
+        tb_apps AS apps,
+        tb_offlineapp_install_stat AS installstat,
+        tb_app_details AS details
+        WHERE
+        apps.appid = installstat.appid
+        AND details.id = apps.default_detail_id
+        AND details.appid = apps.appid
+        AND details.accountid = #accountId#
+        <isNotEmpty prepend="and" property="startTime">
+            STR_TO_DATE(
+            CONCAT(
+            installstat. YEAR,
+            '-',
+            installstat. MONTH,
+            '-',
+            installstat. DAY
+            ),
+            '%Y-%c-%e'
+            ) BETWEEN STR_TO_DATE(
+            #startTime#, '%Y-%c-%e')
+            AND STR_TO_DATE(
+            #endTime#, '%Y-%c-%e')
+        </isNotEmpty>
+    </select>
+    <!--到达量的手机串号-->
+    <select id="countAppsPhoneImei" resultClass="countAppResult" parameterClass="countAppParameter">
+        SELECT
+            apps.app_name AS appName,
+            countApp.phone_imei AS phoneImei,
+            saleLog.phone_model_name as phoneModelName,
+            date_format(saleLog.install_time, '%Y-%m-%d')  as installTime
+        FROM
+            tb_count_app AS countApp,
+            tb_apps AS apps,
+            tb_offlineapp_sale_log AS saleLog
+        WHERE
+            apps.appid = countApp.appid
+            AND countApp.appid = #appid#
+            AND countApp.phone_imei = saleLog.phone_imei
+            AND countApp.appid = saleLog.appid
+        <isNotEmpty prepend="and" property="startTime">
+            STR_TO_DATE(countApp.created,'%Y-%c-%e') BETWEEN STR_TO_DATE(#startTime#, '%Y-%c-%e')
+            AND STR_TO_DATE(#endTime#, '%Y-%c-%e')
+        </isNotEmpty>
+        GROUP BY
+           phoneImei
+        <isEqual prepend="" property="flag" compareValue = "0">
+            limit
+            #endRow#
+            offset
+            #startRow#
+        </isEqual>
+    </select>
+
+    <select id="countAppsPhoneImeiCounts" parameterClass="countAppParameter" resultClass="Integer">
+        SELECT
+        count(DISTINCT saleLog.phone_imei)
+        FROM
+        tb_count_app AS countApp,
+        tb_apps AS apps,
+        tb_offlineapp_sale_log AS saleLog
+        WHERE
+        apps.appid = countApp.appid
+        AND countApp.appid = #appid#
+        AND countApp.phone_imei = saleLog.phone_imei
+        AND countApp.appid = saleLog.appid
+        <isNotEmpty prepend="and" property="startTime">
+            STR_TO_DATE(countApp.created,'%Y-%c-%e') BETWEEN STR_TO_DATE(#startTime#, '%Y-%c-%e')
+            AND STR_TO_DATE(#endTime#, '%Y-%c-%e')
+        </isNotEmpty>
+    </select>
+
+
+</sqlMap>

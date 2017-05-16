@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-autowire="byName">
+
+    <!-- 用户基本信息 -->
+    <bean id="rpcJdUserService" class="com.jd.sns.u.soa.client.IceClientBean" destroy-method="close">
+	    <property name="prxClsName" value="com.jd.uic.soa.rpc.RpcJdUserServicePrx"/>
+		<property name="url" value="${appstore-cp.userinfo.ice.url}" />
+		<property name="context" >
+			<map>
+				<entry key="APP">
+					<value>${appstore.cp.domain.name}</value>
+				</entry>
+				<entry key="TOKEN">
+					<value>${appstore-cp.userinfo.ice.token}</value>
+				</entry>
+			</map>
+	          </property>
+	</bean>
+    <!-- 用户基本信息end -->
+
+
+</beans>

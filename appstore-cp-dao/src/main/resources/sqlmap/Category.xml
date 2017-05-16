@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Category">
+    <typeAlias alias="Category" type="com.jd.appstore.domain.Category"/>
+    <typeAlias alias="CategoryResult" type="com.jd.appstore.domain.web.CategoryResult"/>
+    <select id="getCategory" parameterClass="int" resultClass="CategoryResult">
+        select
+          categoryid as categoryId,
+          category_name as categoryName
+        from
+          tb_category
+        where
+          parent_id =#id#
+        and
+          level = 3
+    </select>
+     <select id="getCategoryName" parameterClass="int" resultClass="String">
+        select
+          category_name as categoryName
+        from
+          tb_category
+        where
+          categoryid =#categoyId#
+    </select>
+</sqlMap>

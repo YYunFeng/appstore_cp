@@ -1,0 +1,146 @@
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta content="IE=EmulateIE7" http-equiv="X-UA-Compatible">
+    <title>#if($title)$title#else 应用发布中心 #end</title>
+    <meta content="" name="description">
+    <meta content="" name="Keywords">
+    <link rel="stylesheet" href="$assetModule.getTarget("/appstore-man/css/base.css")" type="text/css"/>
+    <script type="text/javascript" src="$assetModule.getTarget("/appstore-man/js/jquery-1.7.1.js")"></script>
+    <script type="text/javascript" src="$assetModule.getTarget("/appstore-man/js/alert.js")"></script>
+    <div class="header-content">
+
+        <div class="header-header">
+        <a  target="_blank" class="header-logo-content"><img
+       src="/appstore-man/images/logo.png" class="logo" alt="应用发布中心"
+       height="60" width="327"/></a>
+            #*<p style="font-size: 25px; color:#327ea3;font-weight:bolder; ">应用发布中心</p></div>*#
+        <div class="header-login-bar">
+            <div id="headTop" class="fr">
+                <ul class="header-pass-info">
+                    #if($stringUtils.isNotBlank($webHelper.getPin()))
+                        <li>$webHelper.getPin()</li>
+                        <li>|</li>
+                        <li><a href="$homeModule.getTarget("/exit.action")">退出</a></li>
+                    #else
+                        <li><a class="open_login" style="cursor:pointer">登录</a></li>
+                        <li>|</li>
+                        <li><a href="$assetModule.getTarget("/regist/regist.action")">注册</a></li>
+                    #end
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-nav-wrapper">
+        <div class="header-nav_l fl"></div>
+        <div class="header-nav fl">
+            <ul class="header-tabs">
+                <li id="nav-home" class="header-tabs-item">
+                    <a href="$homeModule.getTarget("/index.action")" class="header-tabs-btn">首　页</a>
+                </li>
+                <li id="nav-app" class="header-tabs-item ">
+                    <a href="$homeModule.getTarget("/dev/devCenter.action")" class="header-tabs-btn ">应用发布中心</a>
+                </li>
+                <li id="nav-statistics" class="header-tabs-item">
+                    <a href="$homeModule.getTarget("/datacenter/dataCenter.action")"
+                       class="header-tabs-btn">数据中心</a>
+                </li>
+            </ul>
+            <div class="header-nav-create fr" id="input_creatApk">
+                #if($stringUtils.isNotBlank($webHelper.getPin()))
+                    <span class="to-create" onclick="createApk();"></span>
+                #else
+                    <input id="input_create" class="to-create open_login" type="button"/>
+                #end
+            </div>
+        </div>
+        <div class="header-nav_r fl"></div>
+    </div>
+    </div>
+    <!--dialog_login_start-->
+    <div class="dialog-login">
+        <div class="dialog-titlebar"><span class="dialog-title">登录</span><span class="ui-icon close">close</span></div>
+        <div class="dialog-content">
+            <div class="login-box">
+                <form name="" method="post" action="" onsubmit="return false" id="">
+                    <p class="form-row_1">
+                        <label class="label">用户名</label>
+                        <input id="input_username" class="input" type="text" name="username"/>
+                    </p>
+
+                    <p class="form-row_2">
+                        <label class="ts red"></label>
+                    </p>
+
+                    <p class="form-row_1">
+                        <label class="label">密&#12288;码</label>
+                        <input id="input_password" class="input" type="password" name="password"/>
+                    </p>
+
+                    <p class="form-row_2">
+                        <label class="ts red"></label>
+                    </p>
+
+                    <p class="form-row_3">
+                        <input id="login_submit" class="to-login" type="button" value="">
+                        <input id="input_reg" class="to-reg" type="button" value=""
+                               onclick="javascript:window.location.href='$homeModule.getTarget("/regist/regist.action")'">
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</head>
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        var a = new Pop({ oPop: "dialog", zIndex: 1001, mode: ["center", "center"], idOpen: "open", idClose: ["close", "close"], cover: true, beCover: false, zIndexCover: 1000, colorCover: "#666", opactiyCover: 0.6 });
+        var b = new Pop({ oPop: "dialog", zIndex: 1001, mode: ["center", "center"], idOpen: "open", idClose: ["close", "closed"], cover: true, beCover: false, zIndexCover: 1000, colorCover: "#666", opactiyCover: 0.6 });
+        var c = new Pop({ oPop: "dialog-login", zIndex: 10001, mode: ["center", "center"], idOpen: "open_login", idClose: ["close", "close"], cover: true, beCover: false, zIndexCover: 1000, colorCover: "#666", opactiyCover: 0.4 });
+    });
+    $("#login_submit").click(function () {
+        var account = $('#input_username').val();
+        var password = $('#input_password').val();
+        if (account == '') {
+            alert('请输入用户名!');
+        } else if (password == '') {
+            alert('请输入密码!');
+        } else {
+            jQuery.ajax({
+                        type : "POST",
+                        data : "cpBaseinfo.account=" + account + "&cpBaseinfo.password=" + password + "&r=" + Math.random(),
+                        url:"$homeModule.getTarget("/index/login.action")",
+                        dataType : 'json',
+                        success : function(data) {
+                            if (data.msg == 'success') {
+                                window.location = "/index.action";
+                            } else {
+                                alert(data.msg);
+                            }
+                        }
+                    });
+        }
+    });
+
+    /* $("#login_submit").click(function () {
+            window.location = "/home.action?id=" + data.id + "&account=" + data.account;
+        });
+    */
+    function login() {
+        location.href = "http://passport.360buy.com/new/login.aspx?ReturnUrl=" + escape(location.href).replace(/\//g, "%2F");
+        return false;
+    }
+    function regist() {
+        location.href = "http://passport.360buy.com/new/registpersonal.aspx?ReturnUrl=" + escape(location.href);
+        return false;
+    }
+
+    function createApk() {
+        window.location = '$homeModule.getTarget("/dev/devCenter.action").addQueryData("msg","createApp")';
+    }
+    function createWeb() {
+        window.location = '$homeModule.getTarget("/dev/devCenter.action").addQueryData("msg","createWeb")';
+    }
+
+</script>

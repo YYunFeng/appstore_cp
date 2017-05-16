@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CpBaseinfo">
+
+    <typeAlias alias="CpBaseinfo" type="com.jd.appstore.domain.CpBaseinfo"/>
+    <typeAlias alias="CpBaseinfoJSON" type="com.jd.appstore.domain.json.CpBaseinfoJSON"/>
+
+    <resultMap id="CpBaseinfoResultMap" class="CpBaseInfo">
+        <result property="id" column="id"/>
+        <result property="account" column="account"/>
+        <result property="password" column="password"/>
+        <result property="supplierNo" column="supplier_no"/>
+        <result property="cpName" column="cp_name"/>
+        <result property="regTime" column="reg_time"/>
+        <result property="cpProperty" column="cp_property"/>
+        <result property="cpType" column="cp_type"/>
+        <result property="feeStatus" column="fee_status"/>
+        <result property="accountStatus" column="account_status"/>
+        <result property="updateStatus" column="update_status"/>
+        <result property="updateComment" column="update_comment"/>
+        <result property="contractNumber" column="contract_number"/>
+        <result property="validPeriodBegin" column="valid_period_begin"/>
+        <result property="validPeriodEnd" column="valid_period_end"/>
+        <result property="defaultFeeMode" column="default_fee_mode"/>
+        <result property="defaultPercent" column="default_percent"/>
+        <result property="comment" column="comment"/>
+        <result property="created" column="created"/>
+        <result property="modified" column="modified"/>
+    </resultMap>
+
+    <insert id="createCpBaseinfo" parameterClass="CpBaseinfo">
+        insert into tb_cp_baseinfo
+        (id,account,password,cp_name,supplier_no,reg_time,cp_property,cp_type,fee_status,account_status,
+        update_status,update_comment,contract_number,valid_period_begin,
+        valid_period_end,default_fee_mode,default_percent,comment,created,modified)
+        values (#id#,#account#,#password#,#cpName#,#supplierNo#,now(),#cpProperty#,#cpType#,#feeStatus#,#accountStatus#,
+        #updateStatus#,#updateComment#,#contractNumber#,#validPeriodBegin#,
+        #validPeriodEnd#,#defaultFeeMode#,#defaultPercent#,#comment#,now(),#modified#)
+    </insert>
+    <select id="findCpBaseinfos" parameterClass="CpBaseinfo" resultClass="CpBaseinfo">
+        select
+            id as id,
+            account as account,
+            password as password,
+            cp_name as cpName,
+            cp_property as cpProperty,
+            default_fee_mode as defaultFeeMode
+        from
+           tb_cp_baseinfo
+        where
+           account=#account#
+        <isNotNull prepend="and" property="password">
+           password=#password#
+        </isNotNull>
+
+    </select>
+
+    <select id="findCpBaseinfoByPin" parameterClass="CpBaseinfo" resultClass="Integer">
+        select
+            count(1)
+        from
+            tb_cp_baseinfo
+        where
+            account=#account#
+    </select>
+    <select id="findCpAccountId" parameterClass="String" resultClass="int">
+        select
+            id
+        from
+           tb_cp_baseinfo
+        where
+            account = #account#
+    </select>
+</sqlMap>

@@ -1,0 +1,188 @@
+<link rel="stylesheet" href="$assetModule.getTarget("/appstore-man/css/statistics.css")" type="text/css" media="screen">
+<link rel="stylesheet" href="$assetModule.getTarget("/appstore-man/css/infedit.css")" type="text/css" media="screen">
+<script language="javascript" type="text/javascript"
+        src="$assetModule.getTarget("/appstore-man/js/DatePicker/WdatePicker.js")"></script>
+<script type="text/javascript" src="$assetModule.getTarget("/appstore-man/js/lltiker.js")"></script>
+<script>
+    $().ready(function () {
+        var object = document.getElementById("nav-statistics");
+        if (object)object.className += " curr";//当前导航
+        var myDate = new Date();
+        var year = myDate.getFullYear();
+        var month = myDate.getMonth() + 1;
+        if (month < 10) {
+            month = "0" + month;
+        }
+        var startTime = year + "-" + month + "-01";
+        myDate = new Date(year, month, 0);
+        var endTime = year + "-" + month + "-" + myDate.getDate();
+        jQuery("#d5221").val(startTime);
+        jQuery("#d5222").val(endTime);
+        update();
+    });
+
+    function searCountApps() {
+        var flag = $("#flag").val();
+        var appid = $("#appid").val();
+        var appName = $("#app_Name").val();
+        if (flag == 0) {
+            update();
+        } else if (flag == 1) {
+            countAppsPhoneImei(appid);
+        } else if (flag == 2) {
+            getPhoneImeiFromInstall(appid, appName);
+        }
+    }
+    function update() {
+        loadTickAlert('加载中....');
+        var startTime = $("#d5221").val();
+        var endTime = $("#d5222").val();
+        $("#back").hide();
+        $("#flag").val(0);
+        jQuery.ajax({
+            url: "/datacenter/countApp.action",
+            type: "POST",
+            dataType: "html",
+            data: {"countAppParameter.startTime": startTime,
+                "countAppParameter.endTime": endTime
+            },
+            success: function (msg) {
+
+                $('#countApps').html(msg);
+                closeTickAlert();
+            }
+        });
+    }
+
+
+    function countAppsPhoneImei(appid) {
+        loadTickAlert('加载中....');
+        $("#back").show();
+        var startTime = $("#d5221").val();
+        var endTime = $("#d5222").val();
+        $("#appid").val(appid);
+        $("#flag").val(1);
+        jQuery.ajax({
+            url: "/datacenter/countAppsPhoneImei.action",
+            type: "post",
+            data: {
+                "countAppParameter.appid": appid,
+                "countAppParameter.startTime": startTime,
+                "countAppParameter.endTime": endTime
+            },
+            dataType: "html",
+            success: function (msg) {
+                $('#countApps').html(msg);
+                closeTickAlert();
+            }
+        });
+    }
+
+    function getPhoneImeiFromInstall(appid, appName) {
+        loadTickAlert('加载中....');
+        $("#back").show();
+        $("#appid").val(appid);
+        $("#app_Name").val(appName);
+        $("#flag").val(2);
+        var startTime = $("#d5221").val();
+        var endTime = $("#d5222").val();
+        jQuery.ajax({
+            url: "/datacenter/getPhoneImeiFromInstall.action",
+            type: "post",
+            data: {
+                "countAppParameter.appid": appid,
+                "countAppParameter.appName": appName,
+                "countAppParameter.startTime": startTime,
+                "countAppParameter.endTime": endTime
+            },
+            dataType: "html",
+            success: function (msg) {
+                $('#countApps').html(msg);
+                closeTickAlert();
+            }
+        });
+    }
+
+    function exportExcel() {
+        loadTickAlert('正在导出文件');
+        var startTime = $("#d5221").val();
+        var endTime = $("#d5222").val();
+        var flag = $("#flag").val();
+        var appid = $("#appid").val();
+        var appName = $("#app_Name").val();
+        jQuery.ajax({
+            url: "/datacenter/exportExcel.action",
+            type: "post",
+            data: {
+                "countAppParameter.appid": appid,
+                "countAppParameter.appName": appName,
+                "countAppParameter.startTime": startTime,
+                "countAppParameter.endTime": endTime,
+                "flag": flag
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data.status == 1) {
+                    window.open(data.excelDownAddress);
+                } else {
+                    alert("系统错误：" + data.mess);
+                }
+                closeTickAlert();
+            }
+        });
+
+    }
+    function createApk() {
+        window.location = '$homeModule.getTarget("/dev/devCenter.action").addQueryData("msg","createApp")';
+    }
+    function createWeb() {
+        window.location = '$homeModule.getTarget("/dev/devCenter.action").addQueryData("msg","createWeb")';
+    }
+</script>
+
+<div class="w_2">
+    <div class="warp">
+        <div class="statistics-box" id="byTime">
+            <div class="mc">
+                <div class="tjdateCounts">
+                    <input id="d5221" class="Wdate" type="text" readonly="readonly"
+                           onFocus="var d5222=$dp.$('d5222');WdatePicker({onpicked:function(){d5222.focus();},maxDate:'#F{$dp.$D(\'d5222\')}'})"/>
+                    <span>--</span>
+                    <input id="d5222" class="Wdate" type="text" readonly="readonly"
+                           onFocus="WdatePicker({minDate:'#F{$dp.$D(\'d5221\')}'})"/>
+                    <input class="search" type="button" value="查询" onclick="searCountApps()"/>
+                    <input class="search" type="button" value="导出" onclick="exportExcel()"/>
+                    <input id="back" class="search hide" type="button" value="返回" onclick="update();"/>
+                </div>
+                <div class="graphics" id="countApps">
+
+
+                </div>
+            </div>
+        </div>
+        <input id="appid" type="hidden"/>
+        <input id="app_Name" type="hidden"/>
+        <input id="flag" type="hidden" value="0"/>
+    </div>
+
+</div>
+
+<!--加载中。。。-->
+<div id="load" class="">
+    <table id="mask" class="loading">
+        <tr>
+            <td style="height:100%;" align="center">
+                <div id="box" style="width: 160px;height: 32px;z-index:9999999;">
+                    <div id="ticker" style="float:left;width: 32px;height: 32px;margin: auto;align:center;">
+                        <img width="32" border="0" height="32"
+                             src="/appstore-man/images/loadingb.gif"></div>
+                    <div id="inputBox"
+                         style="float:left;width: auto;height: auto;font-weight: bold;font-size: 18px;line-height:32px;padding-left:12px;color: rgb(0, 159, 229);">
+                        加载中....
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
